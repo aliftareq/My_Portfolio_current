@@ -17,46 +17,51 @@ import WorkSliderBtns from "../../components/WorkSliderBtns";
 const projects = [
   {
     num: "01",
-    category: "frontend",
+    category: "fullstack",
     title: "Project 1",
     description:
-      "Lorem ipsum dolor sit amet consectetur, adipisicing elit. Quaerat, tenetur magni cumque consequatur eos voluptas corporis, dolorem quia iusto hic cum ducimus minus incidunt laborum accusamus iure velit consequuntur ipsam.",
-    stack: [{ name: "Html 5" }, { name: "Css 3" }, { name: "JavaScript" }],
-    image: "/assets/work/thumb1.png",
-    live: "",
-    github: "",
+      "An Website to Buying and selling Second Hand Truck . It helps whoever is struggling to sell his/her old truck and whoever wants to own a second hand truck at a cheap Price.Actually this website creates a bridge between buyers and sellers and they will be mutually helped by each other.",
+    stack: [
+      { name: "React.js" },
+      { name: "Node.js" },
+      { name: "Express" },
+      { name: "MongoDB" },
+    ],
+    image: "/assets/work/thumb1.JPG",
+    live: "https://truck-bazar.web.app/",
+    github: "https://github.com/aliftareq/Truck-Bazar-client-side-Repository",
   },
   {
     num: "02",
     category: "fullstack",
     title: "Project 2",
     description:
-      "Lorem ipsum dolor sit amet consectetur, adipisicing elit. Quaerat, tenetur magni cumque consequatur eos voluptas corporis, dolorem quia iusto hic cum ducimus minus incidunt laborum accusamus iure velit consequuntur ipsam.",
+      "Doctors portal is an website for finding and scheduling doctor and patient appointment. This website helps patient to find a doctor regarding their problem in their favorable time.",
     stack: [
-      { name: "Next.js" },
-      { name: "Tailwind.css" },
+      { name: "React.js" },
       { name: "Node.js" },
-      { name: "Html 5" },
+      { name: "Express" },
+      { name: "MongoDB" },
     ],
-    image: "/assets/work/thumb2.png",
-    live: "",
-    github: "",
+    image: "/assets/work/thumb2.JPG",
+    live: "https://doctors-portal-24949.web.app/",
+    github: "https://github.com/aliftareq/doctors-portal-client",
   },
   {
     num: "03",
-    category: "frontend",
+    category: "fullstack",
     title: "Project 3",
     description:
-      "Lorem ipsum dolor sit amet consectetur, adipisicing elit. Quaerat, tenetur magni cumque consequatur eos voluptas corporis, dolorem quia iusto hic cum ducimus minus incidunt laborum accusamus iure velit consequuntur ipsam.",
+      "Bistro-Boss is a restaurent website, where we can find various kind of food and ordrer it through online. Thereby you can also pay it through payment gateway and find it useful to order food where-ever or when-ever you want.",
     stack: [
-      { name: "Next.js" },
-      { name: "Tailwind.css" },
-      { name: "JavaScript" },
-      { name: "Html 5" },
+      { name: "React.js" },
+      { name: "Node.js" },
+      { name: "Express" },
+      { name: "MongoDB" },
     ],
-    image: "/assets/work/thumb3.png",
-    live: "",
-    github: "",
+    image: "/assets/work/thumb3.JPG",
+    live: "https://bistro-boss-restaurant-f78d3.web.app/",
+    github: "https://github.com/aliftareq/Bistro-Boss-Restaurant-Project",
   },
 ];
 
@@ -108,7 +113,7 @@ const Work = () => {
               {/* button */}
               <div className="flex items-center gap-4">
                 {/* live project button */}
-                <Link href={project.live}>
+                <Link href={project.live} target="_blank">
                   <TooltipProvider delayDuration={100}>
                     <Tooltip>
                       <TooltipTrigger className="w-[70px] h-[70px] rounded-full bg-white/5 flex justify-center items-center group">
@@ -121,7 +126,7 @@ const Work = () => {
                   </TooltipProvider>
                 </Link>
                 {/* github project button */}
-                <Link href={project.github}>
+                <Link href={project.github} target="_blank">
                   <TooltipProvider delayDuration={100}>
                     <Tooltip>
                       <TooltipTrigger className="w-[70px] h-[70px] rounded-full bg-white/5 flex justify-center items-center group">
