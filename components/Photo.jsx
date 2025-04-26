@@ -28,7 +28,7 @@ const Photo = () => {
             quality={100}
             fill
             alt="photo"
-            className="object-contain"
+            className="object-contain mx-auto pb-6"
           />
         </motion.div>
 
