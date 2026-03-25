@@ -1,10 +1,8 @@
+import { ClerkProvider } from "@clerk/nextjs";
 import { JetBrains_Mono } from "next/font/google";
 import "./globals.css";
-import Header from "../components/Header";
-import StairTransition from "../components/StairTransition";
-import PageTransition from "../components/PageTransition";
-
-// componants
+import RouteLayout from "../components/RouteLayout.jsx";
+import ReduxProvider from "../redux/provider";
 
 const jetbrainsMono = JetBrains_Mono({
   subsets: ["latin"],
@@ -14,17 +12,19 @@ const jetbrainsMono = JetBrains_Mono({
 
 export const metadata = {
   title: "Alif's PORTFOLIO",
-  description: "A modern portofolio of by NextJS",
+  description: "A modern portfolio by NextJS",
 };
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en">
-      <body className={jetbrainsMono.variable}>
-        <Header />
-        <StairTransition />
-        <PageTransition>{children}</PageTransition>
-      </body>
-    </html>
+    <ClerkProvider>
+      <html lang="en">
+        <body className={jetbrainsMono.variable}>
+          <ReduxProvider>
+            <RouteLayout>{children}</RouteLayout>
+          </ReduxProvider>
+        </body>
+      </html>
+    </ClerkProvider>
   );
 }

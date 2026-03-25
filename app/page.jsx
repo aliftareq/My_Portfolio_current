@@ -2,9 +2,9 @@ import { Button } from "../components/ui/button";
 import { FiDownload } from "react-icons/fi";
 
 // components
-import Social from "../components/Social";
-import Photo from "../components/Photo";
-import Stats from "../components/Stats";
+import Social from "../components/main/Social";
+import Photo from "../components/main/Photo";
+import Stats from "../components/main/Stats";
 
 const Home = () => {
   return (
@@ -19,9 +19,9 @@ const Home = () => {
             </h1>
             <span className="text-xl">A Software Developer</span>
             <p className="max-w-[500px] mb-9 text-white/80">
-              I excel at crafting elegant digital experiences and I am
-              proficient in multiple programming language and technological
-              tools.
+              I design and build elegant digital experiences, combining strong
+              technical expertise with proficiency in multiple programming
+              languages and cutting-edge tools.
             </p>
             {/* button and socials */}
             <div className="flex flex-col xl:flex-row items-center gap-8">
@@ -42,7 +42,7 @@ const Home = () => {
             </div>
           </div>
           {/* photo */}
-          <div className="order-1 xl:order-none mb-8 xl:mb-0">
+          <div className="order-1 xl:order-none mb-6 xl:mb-0">
             <Photo />
           </div>
         </div>
