@@ -4,6 +4,7 @@ import morgan from "morgan";
 
 import uploadRoutes from "./routes/uploadRoutes.js";
 import projectRoutes from "./routes/projectRoutes.js";
+import profileRoutes from "./routes/profileRoutes.js";
 
 const app = express();
 
@@ -30,5 +31,6 @@ app.get("/api/health", (req, res) => {
 //routes 
 app.use("/api", uploadRoutes);
 app.use("/api/projects", projectRoutes);
+app.use("/api/profile", profileRoutes);
 
 export default app;

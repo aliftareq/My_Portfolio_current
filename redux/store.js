@@ -7,7 +7,7 @@ import biodataReducer from "./features/biodata/biodataSlice";
 export const store = configureStore({
   reducer: {
     project: projectReducer,
-    // profile: profileReducer,
+    profile: profileReducer,
     // contact: contactReducer,
     // biodata: biodataReducer,
   },

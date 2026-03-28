@@ -8,9 +8,10 @@ import { toast } from "sonner";
 import {
   createProject,
   clearProjectState,
-  clearUploadedImage,
+  clearProjectUploadedImage,
   clearGalleryImages,
   removeGalleryImage,
+  uploadProjectMainImage,
   uploadProjectGalleryImage,
 } from "../../../../redux/features/project/projectSlice";
 import ImageUpload from "../../../../components/ImageUpload";
@@ -151,7 +152,7 @@ export default function NewProjectPage() {
       toast.success(message || "Project added successfully");
 
       dispatch(clearProjectState());
-      dispatch(clearUploadedImage());
+      dispatch(clearProjectUploadedImage());
       dispatch(clearGalleryImages());
 
       router.push("/admin/projects");
@@ -167,7 +168,7 @@ export default function NewProjectPage() {
 
   useEffect(() => {
     return () => {
-      dispatch(clearUploadedImage());
+      dispatch(clearProjectUploadedImage());
       dispatch(clearGalleryImages());
     };
   }, [dispatch]);
@@ -175,27 +176,27 @@ export default function NewProjectPage() {
   return (
     <div className="min-h-screen py-10 text-white">
       <div className="container mx-auto max-w-5xl">
-        <h1 className="text-3xl font-bold mb-8">Add New Project</h1>
+        <h1 className="mb-8 text-3xl font-bold">Add New Project</h1>
 
         <form
           onSubmit={handleSubmit}
           className="space-y-8 rounded-3xl border border-white/10 bg-white/5 p-6 md:p-8"
         >
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+          <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
             <input
               type="text"
               name="title"
               placeholder="Title"
               value={form.title}
               onChange={handleChange}
-              className="w-full h-12 px-4 rounded-xl bg-white/5 border border-white/10 outline-none focus:border-accent"
+              className="h-12 w-full rounded-xl border border-white/10 bg-white/5 px-4 outline-none focus:border-accent"
             />
 
             <select
               name="category"
               value={form.category}
               onChange={handleChange}
-              className="w-full h-12 px-4 rounded-xl bg-white/5 border border-white/10 outline-none focus:border-accent"
+              className="h-12 w-full rounded-xl border border-white/10 bg-white/5 px-4 outline-none focus:border-accent"
             >
               {serviceOptions.map((service) => (
                 <option
@@ -209,14 +210,14 @@ export default function NewProjectPage() {
             </select>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+          <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
             <input
               type="text"
               name="subCategory"
               placeholder="Sub-category"
               value={form.subCategory}
               onChange={handleChange}
-              className="w-full h-12 px-4 rounded-xl bg-white/5 border border-white/10 outline-none focus:border-accent"
+              className="h-12 w-full rounded-xl border border-white/10 bg-white/5 px-4 outline-none focus:border-accent"
             />
 
             <input
@@ -225,7 +226,7 @@ export default function NewProjectPage() {
               placeholder="Slug"
               value={form.slug}
               onChange={handleChange}
-              className="w-full h-12 px-4 rounded-xl bg-white/5 border border-white/10 outline-none focus:border-accent"
+              className="h-12 w-full rounded-xl border border-white/10 bg-white/5 px-4 outline-none focus:border-accent"
             />
           </div>
 
@@ -235,12 +236,12 @@ export default function NewProjectPage() {
             value={form.description}
             onChange={handleChange}
             rows={5}
-            className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 outline-none focus:border-accent resize-none"
+            className="w-full resize-none rounded-xl border border-white/10 bg-white/5 px-4 py-3 outline-none focus:border-accent"
           />
 
           <div className="space-y-3">
-            <div className="flex items-center justify-between gap-4 flex-wrap">
-              <p className="text-white text-lg font-medium">Tech Stack</p>
+            <div className="flex flex-wrap items-center justify-between gap-4">
+              <p className="text-lg font-medium text-white">Tech Stack</p>
               <button
                 type="button"
                 onClick={() => addField("techStack")}
@@ -251,7 +252,7 @@ export default function NewProjectPage() {
               </button>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
               {form.techStack.map((item, index) => (
                 <div key={index} className="relative">
                   <input
@@ -261,13 +262,13 @@ export default function NewProjectPage() {
                     onChange={(e) =>
                       handleArrayChange(index, e.target.value, "techStack")
                     }
-                    className="w-full h-14 px-4 pr-14 rounded-xl bg-white/5 border border-white/10 outline-none focus:border-accent"
+                    className="h-14 w-full rounded-xl border border-white/10 bg-white/5 px-4 pr-14 outline-none focus:border-accent"
                   />
 
                   <button
                     type="button"
                     onClick={() => removeField(index, "techStack")}
-                    className="absolute right-2 top-1/2 -translate-y-1/2 h-10 w-10 rounded-lg bg-red-500/90 text-white hover:bg-red-500"
+                    className="absolute right-2 top-1/2 h-10 w-10 -translate-y-1/2 rounded-lg bg-red-500/90 text-white hover:bg-red-500"
                   >
                     ×
                   </button>
@@ -276,11 +277,17 @@ export default function NewProjectPage() {
             </div>
           </div>
 
-          <ImageUpload />
+          <ImageUpload
+            label="Main Image"
+            buttonText="Click to upload main image"
+            selector={(state) => state.project}
+            uploadAction={uploadProjectMainImage}
+            clearAction={clearProjectUploadedImage}
+          />
 
           <div className="space-y-4">
-            <div className="flex items-center justify-between gap-4 flex-wrap">
-              <p className="text-white text-lg font-medium">Gallery Images</p>
+            <div className="flex flex-wrap items-center justify-between gap-4">
+              <p className="text-lg font-medium text-white">Gallery Images</p>
 
               <button
                 type="button"
@@ -332,7 +339,7 @@ export default function NewProjectPage() {
             </div>
 
             {galleryPreviewItems.length > 0 && (
-              <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4">
+              <div className="grid grid-cols-2 gap-4 md:grid-cols-3 xl:grid-cols-4">
                 {galleryPreviewItems.map((item, index) => (
                   <div
                     key={item.id}
@@ -365,14 +372,14 @@ export default function NewProjectPage() {
             )}
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+          <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
             <input
               type="text"
               name="liveUrl"
               placeholder="Live URL"
               value={form.liveUrl}
               onChange={handleChange}
-              className="w-full h-12 px-4 rounded-xl bg-white/5 border border-white/10 outline-none focus:border-accent"
+              className="h-12 w-full rounded-xl border border-white/10 bg-white/5 px-4 outline-none focus:border-accent"
             />
 
             <input
@@ -381,11 +388,11 @@ export default function NewProjectPage() {
               placeholder="GitHub URL"
               value={form.githubUrl}
               onChange={handleChange}
-              className="w-full h-12 px-4 rounded-xl bg-white/5 border border-white/10 outline-none focus:border-accent"
+              className="h-12 w-full rounded-xl border border-white/10 bg-white/5 px-4 outline-none focus:border-accent"
             />
           </div>
 
-          <label className="inline-flex items-center gap-3 rounded-xl border border-white/10 bg-white/5 px-4 py-3 cursor-pointer">
+          <label className="inline-flex cursor-pointer items-center gap-3 rounded-xl border border-white/10 bg-white/5 px-4 py-3">
             <input
               type="checkbox"
               name="featured"
@@ -399,13 +406,9 @@ export default function NewProjectPage() {
           <button
             type="submit"
             disabled={loading || mainImageLoading || galleryImageLoading}
-            className="w-full h-12 rounded-xl bg-accent text-primary font-semibold hover:bg-accent/90 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="h-12 w-full rounded-xl bg-accent font-semibold text-primary hover:bg-accent/90 disabled:cursor-not-allowed disabled:opacity-50"
           >
-            {mainImageLoading || galleryImageLoading
-              ? "Uploading image..."
-              : loading
-                ? "Creating..."
-                : "Create Project"}
+            {loading ? "Creating..." : "Create Project"}
           </button>
         </form>
       </div>

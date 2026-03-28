@@ -3,18 +3,19 @@
 import { useEffect, useRef, useState } from "react";
 import { UploadCloudIcon, XIcon } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  uploadProjectMainImage,
-  clearUploadedImage,
-} from "../redux/features/project/projectSlice";
 
-export default function ImageUpload() {
+export default function ImageUpload({
+  label = "Image",
+  buttonText = "Click to upload image",
+  selector,
+  uploadAction,
+  clearAction,
+}) {
   const dispatch = useDispatch();
   const inputRef = useRef(null);
 
-  const { mainImageLoading, uploadedImageUrl, mainImageError } = useSelector(
-    (state) => state.project,
-  );
+  const { mainImageLoading, uploadedImageUrl, mainImageError } =
+    useSelector(selector);
 
   const [imageFile, setImageFile] = useState(null);
   const [previewUrl, setPreviewUrl] = useState(null);
@@ -24,7 +25,7 @@ export default function ImageUpload() {
 
     if (selectedFile) {
       setImageFile(selectedFile);
-      dispatch(uploadProjectMainImage(selectedFile));
+      dispatch(uploadAction(selectedFile));
     }
 
     event.target.value = "";
@@ -38,7 +39,7 @@ export default function ImageUpload() {
     }
 
     setPreviewUrl(null);
-    dispatch(clearUploadedImage());
+    dispatch(clearAction());
 
     if (inputRef.current) {
       inputRef.current.value = "";
@@ -59,14 +60,16 @@ export default function ImageUpload() {
     };
   }, [imageFile]);
 
+  const inputId = `${label.toLowerCase().replace(/\s+/g, "-")}-upload`;
+
   return (
     <div className="space-y-3">
-      <p className="text-white text-lg font-medium">Main Image</p>
+      <p className="text-lg font-medium text-white">{label}</p>
 
       <div className="flex items-center gap-4 rounded-2xl border border-white/10 bg-white/5 p-4">
         <div className="relative h-20 w-20 shrink-0">
           <input
-            id="main-image-upload"
+            id={inputId}
             type="file"
             className="hidden"
             ref={inputRef}
@@ -76,7 +79,7 @@ export default function ImageUpload() {
 
           {!imageFile ? (
             <label
-              htmlFor="main-image-upload"
+              htmlFor={inputId}
               className="flex h-20 w-20 cursor-pointer items-center justify-center rounded-xl border-2 border-dashed border-white/20 bg-white/5 transition hover:border-accent/60 hover:bg-white/10"
             >
               <UploadCloudIcon className="h-6 w-6 text-white/60" />
@@ -109,9 +112,7 @@ export default function ImageUpload() {
         </div>
 
         <div className="min-w-0 space-y-1">
-          <p className="text-sm font-medium text-white">
-            Click to upload main image
-          </p>
+          <p className="text-sm font-medium text-white">{buttonText}</p>
 
           {!imageFile && (
             <p className="text-xs text-white/50">PNG, JPG, WEBP supported</p>

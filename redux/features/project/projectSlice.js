@@ -1,4 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { uploadImageRequest } from "../shared/uploadImageHelper";
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
 
@@ -8,58 +9,14 @@ const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
 export const uploadProjectMainImage = createAsyncThunk(
   "project/uploadProjectMainImage",
   async (file, thunkAPI) => {
-    try {
-      const formData = new FormData();
-      formData.append("my_file", file);
-
-      const response = await fetch(`${BASE_URL}/api/upload-image`, {
-        method: "POST",
-        body: formData,
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        return thunkAPI.rejectWithValue(
-          data.message || "Failed to upload main image",
-        );
-      }
-
-      return data;
-    } catch (error) {
-      return thunkAPI.rejectWithValue(
-        error.message || "Something went wrong while uploading main image",
-      );
-    }
+    return uploadImageRequest(file, thunkAPI, "Failed to upload main image");
   },
 );
 
 export const uploadProjectGalleryImage = createAsyncThunk(
   "project/uploadProjectGalleryImage",
   async (file, thunkAPI) => {
-    try {
-      const formData = new FormData();
-      formData.append("my_file", file);
-
-      const response = await fetch(`${BASE_URL}/api/upload-image`, {
-        method: "POST",
-        body: formData,
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        return thunkAPI.rejectWithValue(
-          data.message || "Failed to upload gallery image",
-        );
-      }
-
-      return data;
-    } catch (error) {
-      return thunkAPI.rejectWithValue(
-        error.message || "Something went wrong while uploading gallery image",
-      );
-    }
+    return uploadImageRequest(file, thunkAPI, "Failed to upload gallery image");
   },
 );
 
@@ -245,7 +202,7 @@ const projectSlice = createSlice({
       state.project = null;
     },
 
-    clearUploadedImage: (state) => {
+    clearProjectUploadedImage: (state) => {
       state.mainImageLoading = false;
       state.mainImageError = null;
       state.uploadedImageUrl = "";
@@ -275,6 +232,7 @@ const projectSlice = createSlice({
         state.uploadedImageUrl =
           action.payload?.result?.secure_url ||
           action.payload?.result?.url ||
+          action.payload?.url ||
           "";
       })
       .addCase(uploadProjectMainImage.rejected, (state, action) => {
@@ -293,6 +251,7 @@ const projectSlice = createSlice({
         const imageUrl =
           action.payload?.result?.secure_url ||
           action.payload?.result?.url ||
+          action.payload?.url ||
           "";
 
         if (imageUrl) {
@@ -435,7 +394,7 @@ const projectSlice = createSlice({
 export const {
   clearProjectState,
   clearSelectedProject,
-  clearUploadedImage,
+  clearProjectUploadedImage,
   clearGalleryImages,
   removeGalleryImage,
 } = projectSlice.actions;
