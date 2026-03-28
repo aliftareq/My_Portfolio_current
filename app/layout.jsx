@@ -1,5 +1,6 @@
 import { ClerkProvider } from "@clerk/nextjs";
 import { JetBrains_Mono } from "next/font/google";
+import { Toaster } from "sonner";
 import "./globals.css";
 import RouteLayout from "../components/RouteLayout.jsx";
 import ReduxProvider from "../redux/provider";
@@ -22,6 +23,7 @@ export default function RootLayout({ children }) {
         <body className={jetbrainsMono.variable}>
           <ReduxProvider>
             <RouteLayout>{children}</RouteLayout>
+            <Toaster richColors position="top-center" />
           </ReduxProvider>
         </body>
       </html>

@@ -1,5 +1,6 @@
 import Project from "../models/Project.js";
 
+// GET ALL PROJECTS
 export const getProjects = async (req, res) => {
   try {
     const projects = await Project.find().sort({ createdAt: -1 });
@@ -18,6 +19,7 @@ export const getProjects = async (req, res) => {
   }
 };
 
+// GET SINGLE BY ID
 export const getSingleProject = async (req, res) => {
   try {
     const { id } = req.params;
@@ -44,6 +46,7 @@ export const getSingleProject = async (req, res) => {
   }
 };
 
+// GET SINGLE BY SLUG
 export const getSingleProjectBySlug = async (req, res) => {
   try {
     const { slug } = req.params;
@@ -70,10 +73,12 @@ export const getSingleProjectBySlug = async (req, res) => {
   }
 };
 
+// CREATE PROJECT ✅ UPDATED
 export const createProject = async (req, res) => {
   try {
     const {
       category,
+      subCategory, // ✅ NEW
       title,
       slug,
       description,
@@ -85,8 +90,18 @@ export const createProject = async (req, res) => {
       featured,
     } = req.body;
 
+    // 🔥 optional: check duplicate slug
+    const existing = await Project.findOne({ slug });
+    if (existing) {
+      return res.status(400).json({
+        success: false,
+        message: "Slug already exists",
+      });
+    }
+
     const project = await Project.create({
       category,
+      subCategory, // ✅ SAVE IT
       title,
       slug,
       description,
@@ -112,14 +127,45 @@ export const createProject = async (req, res) => {
   }
 };
 
+// UPDATE PROJECT ✅ UPDATED
 export const updateSingleProject = async (req, res) => {
   try {
     const { id } = req.params;
 
-    const updatedProject = await Project.findByIdAndUpdate(id, req.body, {
-      new: true,
-      runValidators: true,
-    });
+    const {
+      category,
+      subCategory, // ✅ NEW
+      title,
+      slug,
+      description,
+      techStack,
+      mainImage,
+      gallery,
+      liveUrl,
+      githubUrl,
+      featured,
+    } = req.body;
+
+    const updatedProject = await Project.findByIdAndUpdate(
+      id,
+      {
+        category,
+        subCategory, // ✅ UPDATE IT
+        title,
+        slug,
+        description,
+        techStack,
+        mainImage,
+        gallery,
+        liveUrl,
+        githubUrl,
+        featured,
+      },
+      {
+        new: true,
+        runValidators: true,
+      },
+    );
 
     if (!updatedProject) {
       return res.status(404).json({
@@ -142,6 +188,7 @@ export const updateSingleProject = async (req, res) => {
   }
 };
 
+// DELETE PROJECT
 export const deleteSingleProject = async (req, res) => {
   try {
     const { id } = req.params;

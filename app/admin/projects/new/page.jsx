@@ -4,6 +4,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
 import { UploadCloudIcon, XIcon } from "lucide-react";
+import { toast } from "sonner";
 import {
   createProject,
   clearProjectState,
@@ -31,8 +32,16 @@ export default function NewProjectPage() {
     galleryImageError,
   } = useSelector((state) => state.project);
 
+  const serviceOptions = [
+    "Web Development",
+    "UI/UX Design",
+    "App Development",
+    "SEO",
+  ];
+
   const [form, setForm] = useState({
-    category: "",
+    category: "Web Development",
+    subCategory: "",
     title: "",
     slug: "",
     description: "",
@@ -113,17 +122,17 @@ export default function NewProjectPage() {
     e.preventDefault();
 
     if (mainImageLoading) {
-      alert("Main image is still uploading. Please wait.");
+      toast.warning("Main image is still uploading. Please wait.");
       return;
     }
 
     if (galleryImageLoading) {
-      alert("Gallery images are still uploading. Please wait.");
+      toast.warning("Gallery images are still uploading. Please wait.");
       return;
     }
 
     if (!uploadedImageUrl) {
-      alert("Please upload a main image.");
+      toast.error("Please upload a main image.");
       return;
     }
 
@@ -139,17 +148,19 @@ export default function NewProjectPage() {
 
   useEffect(() => {
     if (success) {
-      alert(message || "Project added successfully");
+      toast.success(message || "Project added successfully");
+
       dispatch(clearProjectState());
       dispatch(clearUploadedImage());
       dispatch(clearGalleryImages());
+
       router.push("/admin/projects");
     }
   }, [success, message, dispatch, router]);
 
   useEffect(() => {
     if (error) {
-      alert(error);
+      toast.error(error || "Something went wrong");
       dispatch(clearProjectState());
     }
   }, [error, dispatch]);
@@ -173,31 +184,50 @@ export default function NewProjectPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
             <input
               type="text"
-              name="category"
-              placeholder="Category"
-              value={form.category}
-              onChange={handleChange}
-              className="w-full h-12 px-4 rounded-xl bg-white/5 border border-white/10 outline-none focus:border-accent"
-            />
-
-            <input
-              type="text"
               name="title"
               placeholder="Title"
               value={form.title}
               onChange={handleChange}
               className="w-full h-12 px-4 rounded-xl bg-white/5 border border-white/10 outline-none focus:border-accent"
             />
+
+            <select
+              name="category"
+              value={form.category}
+              onChange={handleChange}
+              className="w-full h-12 px-4 rounded-xl bg-white/5 border border-white/10 outline-none focus:border-accent"
+            >
+              {serviceOptions.map((service) => (
+                <option
+                  key={service}
+                  value={service}
+                  className="bg-[#1c1c22] text-white"
+                >
+                  {service}
+                </option>
+              ))}
+            </select>
           </div>
 
-          <input
-            type="text"
-            name="slug"
-            placeholder="Slug"
-            value={form.slug}
-            onChange={handleChange}
-            className="w-full h-12 px-4 rounded-xl bg-white/5 border border-white/10 outline-none focus:border-accent"
-          />
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+            <input
+              type="text"
+              name="subCategory"
+              placeholder="Sub-category"
+              value={form.subCategory}
+              onChange={handleChange}
+              className="w-full h-12 px-4 rounded-xl bg-white/5 border border-white/10 outline-none focus:border-accent"
+            />
+
+            <input
+              type="text"
+              name="slug"
+              placeholder="Slug"
+              value={form.slug}
+              onChange={handleChange}
+              className="w-full h-12 px-4 rounded-xl bg-white/5 border border-white/10 outline-none focus:border-accent"
+            />
+          </div>
 
           <textarea
             name="description"

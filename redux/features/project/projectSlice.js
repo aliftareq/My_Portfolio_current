@@ -70,7 +70,10 @@ export const fetchProjects = createAsyncThunk(
   "project/fetchProjects",
   async (_, thunkAPI) => {
     try {
-      const response = await fetch(`${BASE_URL}/api/projects`);
+      const response = await fetch(`${BASE_URL}/api/projects`, {
+        cache: "no-store",
+      });
+
       const data = await response.json();
 
       if (!response.ok) {
@@ -90,7 +93,10 @@ export const fetchSingleProject = createAsyncThunk(
   "project/fetchSingleProject",
   async (id, thunkAPI) => {
     try {
-      const response = await fetch(`${BASE_URL}/api/projects/${id}`);
+      const response = await fetch(`${BASE_URL}/api/projects/${id}`, {
+        cache: "no-store",
+      });
+
       const data = await response.json();
 
       if (!response.ok) {
@@ -110,7 +116,10 @@ export const fetchSingleProjectBySlug = createAsyncThunk(
   "project/fetchSingleProjectBySlug",
   async (slug, thunkAPI) => {
     try {
-      const response = await fetch(`${BASE_URL}/api/projects/slug/${slug}`);
+      const response = await fetch(`${BASE_URL}/api/projects/slug/${slug}`, {
+        cache: "no-store",
+      });
+
       const data = await response.json();
 
       if (!response.ok) {
@@ -231,19 +240,23 @@ const projectSlice = createSlice({
       state.success = false;
       state.message = null;
     },
+
     clearSelectedProject: (state) => {
       state.project = null;
     },
+
     clearUploadedImage: (state) => {
       state.mainImageLoading = false;
       state.mainImageError = null;
       state.uploadedImageUrl = "";
     },
+
     clearGalleryImages: (state) => {
       state.galleryImageLoading = false;
       state.galleryImageError = null;
       state.galleryImages = [];
     },
+
     removeGalleryImage: (state, action) => {
       state.galleryImages = state.galleryImages.filter(
         (_, index) => index !== action.payload,
@@ -259,7 +272,6 @@ const projectSlice = createSlice({
       })
       .addCase(uploadProjectMainImage.fulfilled, (state, action) => {
         state.mainImageLoading = false;
-        state.mainImageError = null;
         state.uploadedImageUrl =
           action.payload?.result?.secure_url ||
           action.payload?.result?.url ||
@@ -268,7 +280,6 @@ const projectSlice = createSlice({
       .addCase(uploadProjectMainImage.rejected, (state, action) => {
         state.mainImageLoading = false;
         state.mainImageError = action.payload || "Failed to upload main image";
-        state.uploadedImageUrl = "";
       })
 
       // GALLERY IMAGE
@@ -278,7 +289,6 @@ const projectSlice = createSlice({
       })
       .addCase(uploadProjectGalleryImage.fulfilled, (state, action) => {
         state.galleryImageLoading = false;
-        state.galleryImageError = null;
 
         const imageUrl =
           action.payload?.result?.secure_url ||
@@ -295,50 +305,50 @@ const projectSlice = createSlice({
           action.payload || "Failed to upload gallery image";
       })
 
-      // fetchProjects
+      // FETCH ALL
       .addCase(fetchProjects.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
       .addCase(fetchProjects.fulfilled, (state, action) => {
         state.loading = false;
-        state.projects = action.payload.data || [];
-        state.count = action.payload.count || 0;
+        state.projects = action.payload?.data || [];
+        state.count = action.payload?.count || 0;
       })
       .addCase(fetchProjects.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload || "Failed to fetch projects";
       })
 
-      // fetchSingleProject
+      // FETCH SINGLE BY ID
       .addCase(fetchSingleProject.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
       .addCase(fetchSingleProject.fulfilled, (state, action) => {
         state.loading = false;
-        state.project = action.payload.data || null;
+        state.project = action.payload?.data || null;
       })
       .addCase(fetchSingleProject.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload || "Failed to fetch project";
       })
 
-      // fetchSingleProjectBySlug
+      // FETCH SINGLE BY SLUG
       .addCase(fetchSingleProjectBySlug.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
       .addCase(fetchSingleProjectBySlug.fulfilled, (state, action) => {
         state.loading = false;
-        state.project = action.payload.data || null;
+        state.project = action.payload?.data || null;
       })
       .addCase(fetchSingleProjectBySlug.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload || "Failed to fetch project";
       })
 
-      // createProject
+      // CREATE
       .addCase(createProject.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -349,12 +359,12 @@ const projectSlice = createSlice({
         state.loading = false;
         state.success = true;
         state.message =
-          action.payload.message || "Project created successfully";
-        state.project = action.payload.data || null;
+          action.payload?.message || "Project created successfully";
+        state.project = action.payload?.data || null;
 
-        if (action.payload.data) {
+        if (action.payload?.data) {
           state.projects.unshift(action.payload.data);
-          state.count += 1;
+          state.count = state.projects.length;
         }
       })
       .addCase(createProject.rejected, (state, action) => {
@@ -363,7 +373,7 @@ const projectSlice = createSlice({
         state.error = action.payload || "Failed to create project";
       })
 
-      // updateProject
+      // UPDATE
       .addCase(updateProject.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -374,14 +384,16 @@ const projectSlice = createSlice({
         state.loading = false;
         state.success = true;
         state.message =
-          action.payload.message || "Project updated successfully";
-        state.project = action.payload.data || null;
+          action.payload?.message || "Project updated successfully";
 
-        const updatedProject = action.payload.data;
+        const updatedProject = action.payload?.data || null;
+        state.project = updatedProject;
+
         if (updatedProject) {
           state.projects = state.projects.map((item) =>
             item._id === updatedProject._id ? updatedProject : item,
           );
+          state.count = state.projects.length;
         }
       })
       .addCase(updateProject.rejected, (state, action) => {
@@ -390,7 +402,7 @@ const projectSlice = createSlice({
         state.error = action.payload || "Failed to update project";
       })
 
-      // deleteProject
+      // DELETE
       .addCase(deleteProject.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -401,7 +413,8 @@ const projectSlice = createSlice({
         state.loading = false;
         state.success = true;
         state.message =
-          action.payload.message || "Project deleted successfully";
+          action.payload?.message || "Project deleted successfully";
+
         state.projects = state.projects.filter(
           (item) => item._id !== action.payload.deletedId,
         );

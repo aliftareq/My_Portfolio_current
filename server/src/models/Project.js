@@ -5,6 +5,13 @@ const projectSchema = new mongoose.Schema(
     category: {
       type: String,
       required: true,
+      trim: true,
+    },
+
+    subCategory: {
+      type: String,
+      trim: true,
+      default: "",
     },
 
     title: {
@@ -18,6 +25,7 @@ const projectSchema = new mongoose.Schema(
       required: true,
       unique: true,
       trim: true,
+      lowercase: true,
     },
 
     description: {

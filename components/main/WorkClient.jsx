@@ -1,22 +1,32 @@
 "use client";
 
 import { motion } from "framer-motion";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
-import { BsArrowUpRight, BsGithub } from "react-icons/bs";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "../ui/tooltip";
 import Link from "next/link";
 import Image from "next/image";
 import WorkSliderBtns from "./WorkSliderBtns";
+import { fetchProjects } from "../../redux/features/project/projectSlice";
 
-export default function WorkClient({ projects }) {
-  const [project, setProject] = useState(projects?.[0] || null);
+export default function WorkClient() {
+  const dispatch = useDispatch();
+  const { projects, loading, error } = useSelector((state) => state.project);
+
+  const [project, setProject] = useState(null);
+
+  useEffect(() => {
+    dispatch(fetchProjects());
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (projects.length > 0) {
+      setProject(projects[0]);
+    } else {
+      setProject(null);
+    }
+  }, [projects]);
 
   const handleSlideChange = (swiper) => {
     const currentIndex = swiper.activeIndex;
@@ -26,6 +36,22 @@ export default function WorkClient({ projects }) {
   const formatProjectNumber = (index) => {
     return String(index + 1).padStart(2, "0");
   };
+
+  if (loading) {
+    return (
+      <div className="min-h-[80vh] flex items-center justify-center text-white">
+        Loading projects...
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-[80vh] flex items-center justify-center text-red-400">
+        {error}
+      </div>
+    );
+  }
 
   if (!projects || projects.length === 0 || !project) {
     return (
@@ -55,10 +81,8 @@ export default function WorkClient({ projects }) {
               </div>
 
               <h2 className="text-[42px] font-bold leading-none text-white group-hover:text-accent transition-all duration-500 capitalize">
-                {project.category} Project
+                {project.title}
               </h2>
-
-              <p className="text-white/60">{project.description}</p>
 
               <ul className="flex gap-4 flex-wrap">
                 {project.techStack?.map((item, index) => (
@@ -72,36 +96,6 @@ export default function WorkClient({ projects }) {
               <div className="border border-white/20"></div>
 
               <div className="flex items-center gap-4 flex-wrap">
-                {project.liveUrl && (
-                  <Link href={project.liveUrl} target="_blank">
-                    <TooltipProvider delayDuration={100}>
-                      <Tooltip>
-                        <TooltipTrigger className="w-[70px] h-[70px] rounded-full bg-white/5 flex justify-center items-center group">
-                          <BsArrowUpRight className="text-white text-3xl group-hover:text-accent" />
-                        </TooltipTrigger>
-                        <TooltipContent>
-                          <p>Live project</p>
-                        </TooltipContent>
-                      </Tooltip>
-                    </TooltipProvider>
-                  </Link>
-                )}
-
-                {project.githubUrl && (
-                  <Link href={project.githubUrl} target="_blank">
-                    <TooltipProvider delayDuration={100}>
-                      <Tooltip>
-                        <TooltipTrigger className="w-[70px] h-[70px] rounded-full bg-white/5 flex justify-center items-center group">
-                          <BsGithub className="text-white text-3xl group-hover:text-accent" />
-                        </TooltipTrigger>
-                        <TooltipContent>
-                          <p>Github Repository</p>
-                        </TooltipContent>
-                      </Tooltip>
-                    </TooltipProvider>
-                  </Link>
-                )}
-
                 <Link
                   href={`/work/${project.slug}`}
                   className="px-6 py-3 rounded-full border border-white/20 text-white hover:border-accent hover:text-accent transition-all"
@@ -121,18 +115,19 @@ export default function WorkClient({ projects }) {
             >
               {projects.map((item, index) => (
                 <SwiperSlide key={item._id || index} className="w-full">
-                  <div className="h-[460px] relative group justify-center items-center bg-pink-50/20">
-                    <div className="absolute top-0 bottom-0 w-full h-full bg-black/10 z-10"></div>
+                  <div className="relative group w-full aspect-[1280/824] bg-transparent">
+                    <div className="absolute inset-0 bg-black/10 z-10 pointer-events-none"></div>
 
                     <Link
                       href={`/work/${item.slug}`}
-                      className="relative w-full h-full block"
+                      className="relative flex items-center justify-center w-full h-full"
                     >
                       <Image
                         src={item.mainImage}
                         fill
-                        className="object-cover"
-                        alt={item.title}
+                        className="object-contain object-center"
+                        alt={item.title || "Project image"}
+                        sizes="(max-width: 1280px) 100vw, 50vw"
                       />
                     </Link>
                   </div>
