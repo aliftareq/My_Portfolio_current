@@ -1,11 +1,6 @@
-// import AdminSidebar from "@/components/admin/AdminSidebar.jsx";
-import AdminSidebar from "../../components/admin/AdminSidebar.jsx";
-
 export default function AdminPage() {
   return (
     <div className="min-h-screen lg:flex">
-      <AdminSidebar />
-
       <main className="flex-1 p-6 lg:p-10">
         <h1 className="text-2xl lg:text-4xl font-bold mb-3">Admin Dashboard</h1>
         <p className="text-white/70 mb-8">

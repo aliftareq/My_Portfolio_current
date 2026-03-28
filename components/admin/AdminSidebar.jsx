@@ -2,7 +2,14 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Menu, X, User, FolderKanban, Mail, LayoutDashboard } from "lucide-react";
+import {
+  Menu,
+  X,
+  User,
+  FolderKanban,
+  Mail,
+  LayoutDashboard,
+} from "lucide-react";
 import { UserButton } from "@clerk/nextjs";
 
 const navItems = [
@@ -18,7 +25,7 @@ export default function AdminSidebar() {
   return (
     <>
       {/* Mobile topbar */}
-      <div className="lg:hidden flex items-center justify-between p-4 border-b border-white/10">
+      <div className="lg:hidden relative flex items-center p-4 border-b border-white/10">
         <button
           onClick={() => setOpen(true)}
           className="p-2 rounded-md border border-white/10 hover:bg-white/10 transition"
@@ -26,9 +33,9 @@ export default function AdminSidebar() {
           <Menu size={22} />
         </button>
 
-        <h2 className="text-lg font-semibold">Admin Panel</h2>
-
-        <UserButton afterSignOutUrl="/" />
+        <h2 className="absolute left-1/2 -translate-x-1/2 text-lg font-semibold">
+          Admin Panel
+        </h2>
       </div>
 
       {/* Desktop sidebar */}

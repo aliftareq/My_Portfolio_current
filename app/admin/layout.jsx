@@ -1,19 +1,18 @@
 import { auth, currentUser } from "@clerk/nextjs/server";
 import { UserButton } from "@clerk/nextjs";
+import AdminSidebar from "../../components/admin/AdminSidebar.jsx";
 
 export default async function AdminLayout({ children }) {
   await auth.protect();
 
   const user = await currentUser();
 
-  const allowedEmails = ["aliftareq@gmail.com"];
+  const allowedEmail = process.env.NEXT_PUBLIC_ADMIN_EMAIL?.toLowerCase();
 
   const userEmails =
     user?.emailAddresses?.map((item) => item.emailAddress.toLowerCase()) || [];
 
-  const isAllowed = userEmails.some((email) =>
-    allowedEmails.includes(email)
-  );
+  const isAllowed = userEmails.includes(allowedEmail);
 
   if (!isAllowed) {
     return (
@@ -21,7 +20,8 @@ export default async function AdminLayout({ children }) {
         <div className="text-center">
           <h1 className="text-3xl font-bold mb-4">Access denied</h1>
           <p className="mb-3">
-            You are signed in, but this account is not allowed to access the admin panel.
+            You are signed in, but this account is not allowed to access the
+            admin panel.
           </p>
           <p className="mb-6">
             Please sign out and log in with the correct admin account.
@@ -35,5 +35,10 @@ export default async function AdminLayout({ children }) {
     );
   }
 
-  return <>{children}</>;
+  return (
+    <div className="min-h-screen lg:flex">
+      <AdminSidebar />
+      <main className="flex-1 p-6 lg:p-10">{children}</main>
+    </div>
+  );
 }
