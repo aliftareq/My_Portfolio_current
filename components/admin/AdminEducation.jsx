@@ -6,67 +6,67 @@ import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "sonner";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  fetchJobExperiences,
-  deleteJobExperience,
-  clearJobState,
-} from "../../redux/features/jobExperience/jobExperienceSlice";
+  fetchEducations,
+  deleteEducation,
+  clearEducationState,
+} from "../../redux/features/education/educationSlice";
 import DeleteModal from "../../components/admin/DeleteModal";
 
-export default function AdminExperienceClient() {
+export default function AdminEducation() {
   const dispatch = useDispatch();
 
-  const { jobs, loading, error, message } = useSelector(
-    (state) => state.jobExperience,
+  const { educations, loading, error, message } = useSelector(
+    (state) => state.education,
   );
 
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [detailsModalOpen, setDetailsModalOpen] = useState(false);
-  const [selectedJob, setSelectedJob] = useState(null);
+  const [selectedEducation, setSelectedEducation] = useState(null);
 
   useEffect(() => {
-    dispatch(fetchJobExperiences());
+    dispatch(fetchEducations());
   }, [dispatch]);
 
   useEffect(() => {
     if (message) {
       toast.success(message);
-      dispatch(clearJobState());
+      dispatch(clearEducationState());
     }
   }, [message, dispatch]);
 
   useEffect(() => {
     if (error) {
       toast.error(error);
-      dispatch(clearJobState());
+      dispatch(clearEducationState());
     }
   }, [error, dispatch]);
 
-  const openDeleteModal = (job) => {
-    setSelectedJob(job);
+  const openDeleteModal = (education) => {
+    setSelectedEducation(education);
     setDeleteModalOpen(true);
   };
 
   const closeDeleteModal = () => {
     if (loading) return;
     setDeleteModalOpen(false);
-    setSelectedJob(null);
+    setSelectedEducation(null);
   };
 
   const handleDeleteConfirm = async () => {
-    if (!selectedJob?._id) return;
+    if (!selectedEducation?._id) return;
 
-    await dispatch(deleteJobExperience(selectedJob._id));
+    await dispatch(deleteEducation(selectedEducation._id));
     closeDeleteModal();
   };
 
-  const openDetailsModal = (job) => {
-    setSelectedJob(job);
+  const openDetailsModal = (education) => {
+    setSelectedEducation(education);
     setDetailsModalOpen(true);
   };
 
   const closeDetailsModal = () => {
     setDetailsModalOpen(false);
-    setSelectedJob(null);
+    setSelectedEducation(null);
   };
 
   return (
@@ -76,34 +76,34 @@ export default function AdminExperienceClient() {
           <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-8 text-center">
             <div>
               <h1 className="text-3xl sm:text-4xl font-bold text-white leading-tight">
-                All Experience
+                All Education
               </h1>
               <p className="text-white/60 mt-2">
-                Manage your job experiences here
+                Manage your education entries here
               </p>
             </div>
 
             <Link
-              href="/admin/experience/new"
+              href="/admin/education/new"
               className="w-full sm:w-auto inline-flex items-center justify-center px-5 py-3 rounded-xl bg-accent text-primary font-semibold hover:bg-accent/90 transition-all"
             >
-              Add Experience
+              Add Education
             </Link>
           </div>
 
-          {loading && (!jobs || jobs.length === 0) ? (
+          {loading && (!educations || educations.length === 0) ? (
             <div className="min-h-[50vh] flex items-center justify-center text-white">
-              Loading job experiences...
+              Loading education entries...
             </div>
-          ) : !loading && (!jobs || jobs.length === 0) ? (
+          ) : !loading && (!educations || educations.length === 0) ? (
             <div className="min-h-[50vh] flex items-center justify-center text-white">
-              No job experiences found.
+              No education entries found.
             </div>
           ) : (
             <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
-              {jobs.map((job, index) => (
+              {educations.map((education, index) => (
                 <motion.div
-                  key={job._id || index}
+                  key={education._id || index}
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.3, delay: index * 0.08 }}
@@ -111,34 +111,34 @@ export default function AdminExperienceClient() {
                 >
                   <button
                     type="button"
-                    onClick={() => openDetailsModal(job)}
+                    onClick={() => openDetailsModal(education)}
                     className="w-full text-left p-6 hover:bg-white/[0.03] transition-all"
                   >
                     <div className="flex items-start justify-between gap-4">
                       <div className="flex-1">
                         <p className="text-sm text-accent font-medium mb-2">
-                          {job.employmentType || "Employment"}
+                          {education.degree || "Degree"}
                         </p>
 
                         <h2 className="text-2xl font-bold text-white leading-tight">
-                          {job.companyName}
+                          {education.institutionName}
                         </h2>
 
                         <p className="text-lg text-white/80 mt-2">
-                          {job.jobTitle}
+                          {education.fieldOfStudy}
                         </p>
 
                         <p className="text-sm text-white/60 mt-3">
-                          {job.location || "Location not provided"}
+                          {education.location || "Location not provided"}
                         </p>
                       </div>
 
                       <div className="shrink-0">
                         <span className="inline-flex items-center rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs text-white/70">
                           {formatDuration(
-                            job.startDate,
-                            job.endDate,
-                            job.currentlyWorking,
+                            education.startDate,
+                            education.endDate,
+                            education.currentlyStudying,
                           )}
                         </span>
                       </div>
@@ -148,14 +148,14 @@ export default function AdminExperienceClient() {
                   <div className="px-6 pb-6">
                     <div className="flex gap-3">
                       <Link
-                        href={`/admin/experience/${job._id}/edit`}
+                        href={`/admin/education/${education._id}/edit`}
                         className="flex-1 text-center px-4 py-2.5 rounded-xl border border-accent text-accent hover:bg-accent hover:text-primary transition-all"
                       >
                         Edit
                       </Link>
 
                       <button
-                        onClick={() => openDeleteModal(job)}
+                        onClick={() => openDeleteModal(education)}
                         disabled={loading}
                         className="flex-1 px-4 py-2.5 rounded-xl border border-red-500 text-red-400 hover:bg-red-500 hover:text-white transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                       >
@@ -172,8 +172,8 @@ export default function AdminExperienceClient() {
 
       <DeleteModal
         isOpen={deleteModalOpen}
-        title="Delete Job Experience"
-        message={`Are you sure you want to delete "${selectedJob?.companyName || "this experience"}"?`}
+        title="Delete Education"
+        message={`Are you sure you want to delete "${selectedEducation?.institutionName || "this education entry"}"?`}
         confirmText="Yes, Delete"
         cancelText="Cancel"
         loading={loading}
@@ -181,24 +181,28 @@ export default function AdminExperienceClient() {
         onCancel={closeDeleteModal}
       />
 
-      <ExperienceDetailsModal
+      <EducationDetailsModal
         isOpen={detailsModalOpen}
-        job={selectedJob}
+        education={selectedEducation}
         onClose={closeDetailsModal}
       />
     </>
   );
 }
 
-function ExperienceDetailsModal({ isOpen, job, onClose }) {
+function EducationDetailsModal({ isOpen, education, onClose }) {
   const duration = useMemo(() => {
-    if (!job) return "";
-    return formatDuration(job.startDate, job.endDate, job.currentlyWorking);
-  }, [job]);
+    if (!education) return "";
+    return formatDuration(
+      education.startDate,
+      education.endDate,
+      education.currentlyStudying,
+    );
+  }, [education]);
 
   return (
     <AnimatePresence>
-      {isOpen && job ? (
+      {isOpen && education ? (
         <motion.div
           className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4"
           initial={{ opacity: 0 }}
@@ -218,14 +222,24 @@ function ExperienceDetailsModal({ isOpen, job, onClose }) {
               <div className="flex items-start justify-between gap-4">
                 <div>
                   <p className="text-accent text-sm font-medium mb-2">
-                    {job.employmentType || "Employment"}
+                    {education.degree || "Degree"}
                   </p>
-                  <h2 className="text-3xl font-bold">{job.companyName}</h2>
-                  <p className="text-xl text-white/80 mt-2">{job.jobTitle}</p>
+                  <h2 className="text-3xl font-bold">
+                    {education.institutionName}
+                  </h2>
+                  <p className="text-xl text-white/80 mt-2">
+                    {education.fieldOfStudy}
+                  </p>
                   <div className="flex flex-wrap gap-3 mt-4 text-sm text-white/60">
-                    <span>{job.location || "Location not provided"}</span>
+                    <span>{education.location || "Location not provided"}</span>
                     <span>•</span>
                     <span>{duration}</span>
+                    {education.grade ? (
+                      <>
+                        <span>•</span>
+                        <span>Grade: {education.grade}</span>
+                      </>
+                    ) : null}
                   </div>
                 </div>
 
@@ -240,54 +254,65 @@ function ExperienceDetailsModal({ isOpen, job, onClose }) {
             </div>
 
             <div className="p-6 sm:p-8 space-y-8">
-              {job.description ? (
+              {education.description ? (
                 <div>
                   <h3 className="text-lg font-semibold mb-3">Description</h3>
-                  <p className="text-white/70 leading-7">{job.description}</p>
+                  <p className="text-white/70 leading-7">
+                    {education.description}
+                  </p>
                 </div>
               ) : null}
 
-              {(job.responsibilities || []).length > 0 ? (
+              {(education.honors || []).length > 0 ? (
+                <div>
+                  <h3 className="text-lg font-semibold mb-3">Honors</h3>
+                  <ul className="space-y-2 text-white/70">
+                    {education.honors.map((item, index) => (
+                      <li key={index} className="flex gap-3">
+                        <span className="text-accent mt-1">•</span>
+                        <span>{item}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ) : null}
+
+              {(education.relevantCoursework || []).length > 0 ? (
                 <div>
                   <h3 className="text-lg font-semibold mb-3">
-                    Responsibilities
+                    Relevant Coursework
                   </h3>
-                  <ul className="space-y-2 text-white/70">
-                    {job.responsibilities.map((item, index) => (
-                      <li key={index} className="flex gap-3">
-                        <span className="text-accent mt-1">•</span>
-                        <span>{item}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              ) : null}
-
-              {(job.achievements || []).length > 0 ? (
-                <div>
-                  <h3 className="text-lg font-semibold mb-3">Achievements</h3>
-                  <ul className="space-y-2 text-white/70">
-                    {job.achievements.map((item, index) => (
-                      <li key={index} className="flex gap-3">
-                        <span className="text-accent mt-1">•</span>
-                        <span>{item}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              ) : null}
-
-              {(job.technologies || []).length > 0 ? (
-                <div>
-                  <h3 className="text-lg font-semibold mb-3">Technologies</h3>
                   <div className="flex flex-wrap gap-2">
-                    {job.technologies.map((tech, index) => (
+                    {education.relevantCoursework.map((course, index) => (
                       <span
-                        key={`${tech}-${index}`}
+                        key={`${course}-${index}`}
                         className="px-3 py-1 rounded-full bg-white/10 border border-white/10 text-sm text-white/80"
                       >
-                        {tech}
+                        {course}
                       </span>
+                    ))}
+                  </div>
+                </div>
+              ) : null}
+
+              {(education.projects || []).length > 0 ? (
+                <div>
+                  <h3 className="text-lg font-semibold mb-3">Projects</h3>
+                  <div className="space-y-4">
+                    {education.projects.map((project, index) => (
+                      <div
+                        key={index}
+                        className="rounded-xl border border-white/10 bg-white/5 p-4"
+                      >
+                        <h4 className="text-base font-semibold text-white">
+                          {project.title}
+                        </h4>
+                        {project.description ? (
+                          <p className="text-white/70 mt-2 leading-7">
+                            {project.description}
+                          </p>
+                        ) : null}
+                      </div>
                     ))}
                   </div>
                 </div>
@@ -300,9 +325,9 @@ function ExperienceDetailsModal({ isOpen, job, onClose }) {
   );
 }
 
-function formatDuration(startDate, endDate, currentlyWorking) {
+function formatDuration(startDate, endDate, currentlyStudying) {
   const start = formatMonthYear(startDate);
-  const end = currentlyWorking ? "Present" : formatMonthYear(endDate);
+  const end = currentlyStudying ? "Present" : formatMonthYear(endDate);
 
   if (!start && !end) return "Duration not provided";
   if (start && end) return `${start} - ${end}`;

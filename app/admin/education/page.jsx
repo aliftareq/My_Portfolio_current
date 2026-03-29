@@ -1,5 +1,5 @@
-const EducationPage = () => {
-  return <div>Education Page</div>;
-};
+import AdminEducation from "../../../components/admin/AdminEducation.jsx";
 
-export default EducationPage;
+export default function Page() {
+  return <AdminEducation />;
+}

@@ -6,13 +6,13 @@ import { useParams, useRouter } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "sonner";
 import {
-  fetchSingleJob,
-  updateJobExperience,
-  clearJobState,
-  clearSelectedJob,
-  clearJobExperienceUploadedLogo,
-  uploadJobExperienceLogo,
-} from "../../../../../redux/features/jobExperience/jobExperienceSlice";
+  fetchSingleEducation,
+  updateEducation,
+  clearEducationState,
+  clearSelectedEducation,
+  clearEducationUploadedLogo,
+  uploadEducationLogo,
+} from "../../../../../redux/features/education/educationSlice";
 import ImageUpload from "../../../../../components/ImageUpload";
 
 export default function Page() {
@@ -23,35 +23,28 @@ export default function Page() {
   const id = params?.id;
 
   const {
-    job,
+    education,
     loading,
     error,
     success,
     message,
     logoImageLoading,
     uploadedLogoUrl,
-  } = useSelector((state) => state.jobExperience);
-
-  const employmentOptions = [
-    "Full-time",
-    "Part-time",
-    "Contract",
-    "Internship",
-    "Freelance",
-  ];
+  } = useSelector((state) => state.education || {});
 
   const [form, setForm] = useState({
-    companyName: "",
-    jobTitle: "",
+    institutionName: "",
+    degree: "",
+    fieldOfStudy: "",
     location: "",
-    employmentType: "Full-time",
     startDate: "",
     endDate: "",
-    currentlyWorking: false,
+    currentlyStudying: false,
+    grade: "",
+    honors: [""],
+    relevantCoursework: [""],
+    projects: [{ title: "", description: "" }],
     description: "",
-    responsibilities: [""],
-    achievements: [""],
-    technologies: [""],
     slug: "",
   });
 
@@ -59,39 +52,44 @@ export default function Page() {
 
   useEffect(() => {
     if (id) {
-      dispatch(fetchSingleJob(id));
+      dispatch(fetchSingleEducation(id));
     }
   }, [dispatch, id]);
 
   useEffect(() => {
-    if (job && !isInitialized) {
+    if (education && !isInitialized) {
       setForm({
-        companyName: job.companyName || "",
-        jobTitle: job.jobTitle || "",
-        location: job.location || "",
-        employmentType: job.employmentType || "Full-time",
-        startDate: formatDateForInput(job.startDate),
-        endDate: formatDateForInput(job.endDate),
-        currentlyWorking: job.currentlyWorking || false,
-        description: job.description || "",
-        responsibilities:
-          job.responsibilities && job.responsibilities.length > 0
-            ? job.responsibilities
+        institutionName: education.institutionName || "",
+        degree: education.degree || "",
+        fieldOfStudy: education.fieldOfStudy || "",
+        location: education.location || "",
+        startDate: formatDateForInput(education.startDate),
+        endDate: formatDateForInput(education.endDate),
+        currentlyStudying: education.currentlyStudying || false,
+        grade: education.grade || "",
+        honors:
+          education.honors && education.honors.length > 0
+            ? education.honors
             : [""],
-        achievements:
-          job.achievements && job.achievements.length > 0
-            ? job.achievements
+        relevantCoursework:
+          education.relevantCoursework &&
+          education.relevantCoursework.length > 0
+            ? education.relevantCoursework
             : [""],
-        technologies:
-          job.technologies && job.technologies.length > 0
-            ? job.technologies
-            : [""],
-        slug: job.slug || "",
+        projects:
+          education.projects && education.projects.length > 0
+            ? education.projects.map((project) => ({
+                title: project.title || "",
+                description: project.description || "",
+              }))
+            : [{ title: "", description: "" }],
+        description: education.description || "",
+        slug: education.slug || "",
       });
 
       setIsInitialized(true);
     }
-  }, [job, isInitialized]);
+  }, [education, isInitialized]);
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -99,7 +97,7 @@ export default function Page() {
     setForm((prev) => ({
       ...prev,
       [name]: type === "checkbox" ? checked : value,
-      ...(name === "currentlyWorking" && checked ? { endDate: "" } : {}),
+      ...(name === "currentlyStudying" && checked ? { endDate: "" } : {}),
     }));
   };
 
@@ -129,8 +127,43 @@ export default function Page() {
     });
   };
 
+  const handleProjectChange = (index, key, value) => {
+    setForm((prev) => {
+      const updatedProjects = [...prev.projects];
+      updatedProjects[index] = {
+        ...updatedProjects[index],
+        [key]: value,
+      };
+
+      return {
+        ...prev,
+        projects: updatedProjects,
+      };
+    });
+  };
+
+  const addProject = () => {
+    setForm((prev) => ({
+      ...prev,
+      projects: [...prev.projects, { title: "", description: "" }],
+    }));
+  };
+
+  const removeProject = (index) => {
+    setForm((prev) => {
+      const updatedProjects = prev.projects.filter((_, i) => i !== index);
+
+      return {
+        ...prev,
+        projects: updatedProjects.length
+          ? updatedProjects
+          : [{ title: "", description: "" }],
+      };
+    });
+  };
+
   const generateSlug = () => {
-    const generated = `${form.companyName}-${form.jobTitle}`
+    const generated = `${form.institutionName}-${form.degree}-${form.fieldOfStudy}`
       .toLowerCase()
       .trim()
       .replace(/[^a-z0-9\s-]/g, "")
@@ -147,54 +180,61 @@ export default function Page() {
     e.preventDefault();
 
     if (logoImageLoading) {
-      toast.warning("Company logo is still uploading. Please wait.");
+      toast.warning("Institution logo is still uploading. Please wait.");
       return;
     }
 
+    const cleanedProjects = form.projects
+      .map((project) => ({
+        title: project.title.trim(),
+        description: project.description.trim(),
+      }))
+      .filter((project) => project.title || project.description);
+
     const cleanedForm = {
       ...form,
-      responsibilities: form.responsibilities.filter(
+      honors: form.honors.filter((item) => item.trim() !== ""),
+      relevantCoursework: form.relevantCoursework.filter(
         (item) => item.trim() !== "",
       ),
-      achievements: form.achievements.filter((item) => item.trim() !== ""),
-      technologies: form.technologies.filter((item) => item.trim() !== ""),
-      companyLogo: uploadedLogoUrl || job?.companyLogo || "",
-      endDate: form.currentlyWorking ? null : form.endDate || null,
+      projects: cleanedProjects,
+      institutionLogo: uploadedLogoUrl || education?.institutionLogo || "",
+      endDate: form.currentlyStudying ? null : form.endDate || null,
     };
 
-    dispatch(updateJobExperience({ id, updatedData: cleanedForm }));
+    dispatch(updateEducation({ id, updatedData: cleanedForm }));
   };
 
   useEffect(() => {
     if (success) {
-      toast.success(message || "Experience updated successfully");
-      dispatch(clearJobState());
-      dispatch(clearJobExperienceUploadedLogo());
-      dispatch(clearSelectedJob());
-      router.push("/admin/experience");
+      toast.success(message || "Education updated successfully");
+      dispatch(clearEducationState());
+      dispatch(clearEducationUploadedLogo());
+      dispatch(clearSelectedEducation());
+      router.push("/admin/education");
     }
   }, [success, message, dispatch, router]);
 
   useEffect(() => {
     if (error) {
       toast.error(error || "Something went wrong");
-      dispatch(clearJobState());
+      dispatch(clearEducationState());
     }
   }, [error, dispatch]);
 
   useEffect(() => {
     return () => {
-      dispatch(clearJobExperienceUploadedLogo());
-      dispatch(clearSelectedJob());
+      dispatch(clearEducationUploadedLogo());
+      dispatch(clearSelectedEducation());
     };
   }, [dispatch]);
 
-  const previewLogo = uploadedLogoUrl || job?.companyLogo || "";
+  const previewLogo = uploadedLogoUrl || education?.institutionLogo || "";
 
   return (
     <div className="min-h-screen py-10 text-white">
       <div className="container mx-auto max-w-6xl">
-        <h1 className="mb-8 text-3xl font-bold">Edit Experience</h1>
+        <h1 className="mb-8 text-3xl font-bold">Edit Education</h1>
 
         <form
           onSubmit={handleSubmit}
@@ -202,14 +242,14 @@ export default function Page() {
         >
           <div className="grid grid-cols-1 gap-6 xl:grid-cols-[1.7fr_1fr]">
             <div className="rounded-[28px] border border-white/10 bg-white/5 p-6">
-              <h2 className="mb-6 text-2xl font-bold">Company Logo</h2>
+              <h2 className="mb-6 text-2xl font-bold">Institution Logo</h2>
 
               <ImageUpload
-                label="Upload Company Logo"
-                buttonText="Click to upload company logo"
-                selector={(state) => state.jobExperience}
-                uploadAction={uploadJobExperienceLogo}
-                clearAction={clearJobExperienceUploadedLogo}
+                label="Upload Institution Logo"
+                buttonText="Click to upload institution logo"
+                selector={(state) => state.education}
+                uploadAction={uploadEducationLogo}
+                clearAction={clearEducationUploadedLogo}
               />
             </div>
 
@@ -221,7 +261,7 @@ export default function Page() {
                   {previewLogo ? (
                     <Image
                       src={previewLogo}
-                      alt="Company logo preview"
+                      alt="Institution logo preview"
                       fill
                       className="object-cover"
                     />
@@ -241,14 +281,14 @@ export default function Page() {
             <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
               <div className="space-y-2">
                 <label className="block text-base font-medium text-white">
-                  Company Name
+                  Institution Name
                 </label>
                 <input
                   type="text"
-                  name="companyName"
-                  value={form.companyName}
+                  name="institutionName"
+                  value={form.institutionName}
                   onChange={handleChange}
-                  placeholder="Enter company name"
+                  placeholder="Enter institution name"
                   required
                   className="h-14 w-full rounded-2xl border border-white/10 bg-white/5 px-4 outline-none focus:border-accent"
                 />
@@ -256,14 +296,29 @@ export default function Page() {
 
               <div className="space-y-2">
                 <label className="block text-base font-medium text-white">
-                  Job Title
+                  Degree
                 </label>
                 <input
                   type="text"
-                  name="jobTitle"
-                  value={form.jobTitle}
+                  name="degree"
+                  value={form.degree}
                   onChange={handleChange}
-                  placeholder="Enter your role"
+                  placeholder="Enter degree"
+                  required
+                  className="h-14 w-full rounded-2xl border border-white/10 bg-white/5 px-4 outline-none focus:border-accent"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <label className="block text-base font-medium text-white">
+                  Field of Study
+                </label>
+                <input
+                  type="text"
+                  name="fieldOfStudy"
+                  value={form.fieldOfStudy}
+                  onChange={handleChange}
+                  placeholder="Enter field of study"
                   required
                   className="h-14 w-full rounded-2xl border border-white/10 bg-white/5 px-4 outline-none focus:border-accent"
                 />
@@ -281,28 +336,6 @@ export default function Page() {
                   placeholder="Enter location"
                   className="h-14 w-full rounded-2xl border border-white/10 bg-white/5 px-4 outline-none focus:border-accent"
                 />
-              </div>
-
-              <div className="space-y-2">
-                <label className="block text-base font-medium text-white">
-                  Employment Type
-                </label>
-                <select
-                  name="employmentType"
-                  value={form.employmentType}
-                  onChange={handleChange}
-                  className="h-14 w-full rounded-2xl border border-white/10 bg-white/5 px-4 outline-none focus:border-accent"
-                >
-                  {employmentOptions.map((item) => (
-                    <option
-                      key={item}
-                      value={item}
-                      className="bg-[#1c1c22] text-white"
-                    >
-                      {item}
-                    </option>
-                  ))}
-                </select>
               </div>
 
               <div className="space-y-2">
@@ -328,8 +361,22 @@ export default function Page() {
                   name="endDate"
                   value={form.endDate}
                   onChange={handleChange}
-                  disabled={form.currentlyWorking}
+                  disabled={form.currentlyStudying}
                   className="h-14 w-full rounded-2xl border border-white/10 bg-white/5 px-4 outline-none focus:border-accent disabled:cursor-not-allowed disabled:opacity-50"
+                />
+              </div>
+
+              <div className="space-y-2 md:col-span-2">
+                <label className="block text-base font-medium text-white">
+                  Grade / GPA / CGPA
+                </label>
+                <input
+                  type="text"
+                  name="grade"
+                  value={form.grade}
+                  onChange={handleChange}
+                  placeholder="e.g. 3.75/4.00"
+                  className="h-14 w-full rounded-2xl border border-white/10 bg-white/5 px-4 outline-none focus:border-accent"
                 />
               </div>
             </div>
@@ -338,12 +385,12 @@ export default function Page() {
               <label className="inline-flex cursor-pointer items-center gap-3 rounded-2xl border border-white/10 bg-white/5 px-4 py-3">
                 <input
                   type="checkbox"
-                  name="currentlyWorking"
-                  checked={form.currentlyWorking}
+                  name="currentlyStudying"
+                  checked={form.currentlyStudying}
                   onChange={handleChange}
                   className="h-4 w-4"
                 />
-                <span className="text-white">Currently Working Here</span>
+                <span className="text-white">Currently Studying Here</span>
               </label>
             </div>
           </div>
@@ -360,81 +407,111 @@ export default function Page() {
                 value={form.description}
                 onChange={handleChange}
                 rows={5}
-                placeholder="Write a short description about this role"
+                placeholder="Write a short description about this education"
                 className="w-full resize-none rounded-2xl border border-white/10 bg-white/5 px-4 py-4 outline-none focus:border-accent"
               />
             </div>
           </div>
 
           <div className="rounded-[28px] border border-white/10 bg-white/5 p-6">
-            <h2 className="mb-6 text-2xl font-bold">Responsibilities</h2>
+            <h2 className="mb-6 text-2xl font-bold">Honors</h2>
 
             <StackedArrayField
-              field="responsibilities"
-              values={form.responsibilities}
+              field="honors"
+              values={form.honors}
               addField={addField}
               removeField={removeField}
               handleArrayChange={handleArrayChange}
-              placeholder="Responsibility"
-              buttonText="Add Responsibility"
+              placeholder="Honor"
+              buttonText="Add Honor"
             />
           </div>
 
           <div className="rounded-[28px] border border-white/10 bg-white/5 p-6">
-            <h2 className="mb-6 text-2xl font-bold">Achievements</h2>
+            <h2 className="mb-6 text-2xl font-bold">Relevant Coursework</h2>
 
             <StackedArrayField
-              field="achievements"
-              values={form.achievements}
+              field="relevantCoursework"
+              values={form.relevantCoursework}
               addField={addField}
               removeField={removeField}
               handleArrayChange={handleArrayChange}
-              placeholder="Achievement"
-              buttonText="Add Achievement"
+              placeholder="Course"
+              buttonText="Add Course"
             />
           </div>
 
           <div className="rounded-[28px] border border-white/10 bg-white/5 p-6">
-            <h2 className="mb-6 text-2xl font-bold">Technologies</h2>
+            <div className="mb-6 flex flex-wrap items-center justify-between gap-4">
+              <h2 className="text-2xl font-bold">Projects</h2>
 
-            <div className="space-y-3">
-              <div className="flex flex-wrap items-center justify-between gap-4">
-                <label className="block text-base font-medium text-white">
-                  Tech Stack
-                </label>
-                <button
-                  type="button"
-                  onClick={() => addField("technologies")}
-                  className="inline-flex items-center gap-2 text-accent hover:text-accent/80"
+              <button
+                type="button"
+                onClick={addProject}
+                className="inline-flex items-center gap-2 text-accent hover:text-accent/80"
+              >
+                <span className="text-xl leading-none">+</span>
+                <span>Add Project</span>
+              </button>
+            </div>
+
+            <div className="space-y-5">
+              {form.projects.map((project, index) => (
+                <div
+                  key={index}
+                  className="rounded-[24px] border border-white/10 bg-white/5 p-5"
                 >
-                  <span className="text-xl leading-none">+</span>
-                  <span>Add Tech</span>
-                </button>
-              </div>
-
-              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
-                {form.technologies.map((item, index) => (
-                  <div key={index} className="relative">
-                    <input
-                      type="text"
-                      value={item}
-                      placeholder={`Tech ${index + 1}`}
-                      onChange={(e) =>
-                        handleArrayChange(index, e.target.value, "technologies")
-                      }
-                      className="h-14 w-full rounded-xl border border-white/10 bg-white/5 px-4 pr-14 outline-none focus:border-accent"
-                    />
+                  <div className="mb-4 flex items-center justify-between gap-4">
+                    <h3 className="text-lg font-semibold text-white">
+                      Project {index + 1}
+                    </h3>
 
                     <button
                       type="button"
-                      onClick={() => removeField(index, "technologies")}
-                      className="absolute right-2 top-1/2 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-lg bg-red-500/90 text-white hover:bg-red-500"
+                      onClick={() => removeProject(index)}
+                      className="rounded-xl bg-red-500/90 px-4 py-2 text-sm text-white hover:bg-red-500"
                     >
-                      ×
+                      Remove
                     </button>
                   </div>
-                ))}
-              </div>
+
+                  <div className="grid grid-cols-1 gap-4">
+                    <div className="space-y-2">
+                      <label className="block text-base font-medium text-white">
+                        Project Title
+                      </label>
+                      <input
+                        type="text"
+                        value={project.title}
+                        onChange={(e) =>
+                          handleProjectChange(index, "title", e.target.value)
+                        }
+                        placeholder="Enter project title"
+                        className="h-14 w-full rounded-2xl border border-white/10 bg-white/5 px-4 outline-none focus:border-accent"
+                      />
+                    </div>
+
+                    <div className="space-y-2">
+                      <label className="block text-base font-medium text-white">
+                        Project Description
+                      </label>
+                      <textarea
+                        value={project.description}
+                        onChange={(e) =>
+                          handleProjectChange(
+                            index,
+                            "description",
+                            e.target.value,
+                          )
+                        }
+                        rows={4}
+                        placeholder="Write project description"
+                        className="w-full resize-none rounded-2xl border border-white/10 bg-white/5 px-4 py-4 outline-none focus:border-accent"
+                      />
+                    </div>
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
 
@@ -474,7 +551,7 @@ export default function Page() {
             disabled={loading || logoImageLoading}
             className="h-14 w-full rounded-2xl bg-accent font-semibold text-primary hover:bg-accent/90 disabled:cursor-not-allowed disabled:opacity-50"
           >
-            {loading ? "Updating..." : "Update Experience"}
+            {loading ? "Updating..." : "Update Education"}
           </button>
         </form>
       </div>
