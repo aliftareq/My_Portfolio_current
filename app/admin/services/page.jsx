@@ -1,9 +1,5 @@
-import React from 'react'
+import AdminService from "../../../components/admin/AdminService.jsx";
 
-const ServicesPage = () => {
-  return (
-    <div>Services Page</div>
-  )
+export default function Page() {
+  return <AdminService />;
 }
-
-export default ServicesPage

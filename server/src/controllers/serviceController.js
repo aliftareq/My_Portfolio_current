@@ -3,7 +3,7 @@ import Service from "../models/Service.js";
 // GET ALL SERVICES
 export const getAllServices = async (req, res) => {
   try {
-    const serviceList = await Service.find().sort({ createdAt: -1 });
+    const serviceList = await Service.find().sort({ createdAt: 1 });
 
     res.status(200).json({
       success: true,
@@ -49,14 +49,7 @@ export const getSingleService = async (req, res) => {
 // CREATE SERVICE
 export const createService = async (req, res) => {
   try {
-    const {
-      title,
-      description,
-      slug,
-      icon,
-      link,
-      isActive,
-    } = req.body;
+    const { title, description, slug, icon, link, isActive } = req.body;
 
     const existing = await Service.findOne({ slug });
     if (existing) {
@@ -94,14 +87,7 @@ export const updateService = async (req, res) => {
   try {
     const { id } = req.params;
 
-    const {
-      title,
-      description,
-      slug,
-      icon,
-      link,
-      isActive,
-    } = req.body;
+    const { title, description, slug, icon, link, isActive } = req.body;
 
     const updatedService = await Service.findByIdAndUpdate(
       id,
@@ -116,7 +102,7 @@ export const updateService = async (req, res) => {
       {
         new: true,
         runValidators: true,
-      }
+      },
     );
 
     if (!updatedService) {

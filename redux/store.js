@@ -3,6 +3,7 @@ import profileReducer from "./features/profile/profileSlice";
 import projectReducer from "./features/project/projectSlice";
 import jobExperienceReducer from "./features/jobExperience/jobExperienceSlice";
 import educationReducer from "./features/education/educationSlice";
+import serviceReducer from "./features/service/serviceSlice";
 import contactReducer from "./features/contact/contactSlice";
 
 export const store = configureStore({
@@ -11,6 +12,7 @@ export const store = configureStore({
     project: projectReducer,
     jobExperience: jobExperienceReducer,
     education: educationReducer,
+    service: serviceReducer,
     // contact: contactReducer,
   },
 });
