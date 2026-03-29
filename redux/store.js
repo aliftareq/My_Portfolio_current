@@ -1,14 +1,14 @@
 import { configureStore } from "@reduxjs/toolkit";
-import projectReducer from "./features/project/projectSlice";
 import profileReducer from "./features/profile/profileSlice";
+import projectReducer from "./features/project/projectSlice";
+import jobExperienceReducer from "./features/jobExperience/jobExperienceSlice";
 import contactReducer from "./features/contact/contactSlice";
-import biodataReducer from "./features/biodata/biodataSlice";
 
 export const store = configureStore({
   reducer: {
-    project: projectReducer,
     profile: profileReducer,
+    project: projectReducer,
+    jobExperience: jobExperienceReducer,
     // contact: contactReducer,
-    // biodata: biodataReducer,
   },
 });

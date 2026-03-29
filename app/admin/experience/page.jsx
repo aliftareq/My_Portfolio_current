@@ -1,5 +1,5 @@
-const ExperiencePage = () => {
-  return <div>Experience Page</div>;
-};
+import AdminJobExperience from "../../../components/admin/AdminJobExperience.jsx";
 
-export default ExperiencePage;
+export default function Page() {
+  return <AdminJobExperience />;
+}
