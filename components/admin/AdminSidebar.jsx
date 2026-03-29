@@ -9,13 +9,21 @@ import {
   FolderKanban,
   Mail,
   LayoutDashboard,
+  Briefcase,
+  GraduationCap,
+  Wrench,
+  Blocks,
 } from "lucide-react";
 import { UserButton } from "@clerk/nextjs";
 
 const navItems = [
   { name: "Dashboard", href: "/admin", icon: LayoutDashboard },
   { name: "Profile", href: "/admin/profile", icon: User },
+  { name: "Experience", href: "/admin/experience", icon: Briefcase },
+  { name: "Education", href: "/admin/education", icon: GraduationCap },
+  { name: "Skills", href: "/admin/skills", icon: Wrench },
   { name: "Projects", href: "/admin/projects", icon: FolderKanban },
+  { name: "Services", href: "/admin/services", icon: Blocks },
   { name: "Contacts", href: "/admin/contacts", icon: Mail },
 ];
 
