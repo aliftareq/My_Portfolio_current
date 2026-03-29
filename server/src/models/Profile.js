@@ -32,6 +32,48 @@ const profileSchema = new mongoose.Schema(
       default: "",
     },
 
+    email: {
+      type: String,
+      trim: true,
+      lowercase: true,
+      default: "",
+    },
+
+    phone: {
+      type: String,
+      trim: true,
+      default: "",
+    },
+
+    skype: {
+      type: String,
+      trim: true,
+      default: "",
+    },
+
+    experience: {
+      type: String,
+      trim: true,
+      default: "",
+    },
+
+    nationality: {
+      type: String,
+      trim: true,
+      default: "",
+    },
+
+    freelance: {
+      type: String,
+      trim: true,
+      default: "",
+    },
+
+    languages: {
+      type: [String],
+      default: [],
+    },
+
     socials: {
       github: {
         type: String,
@@ -57,7 +99,7 @@ const profileSchema = new mongoose.Schema(
   },
   {
     timestamps: true,
-  },
+  }
 );
 
 // Prevent model overwrite in dev (Next.js hot reload fix)

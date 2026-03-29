@@ -34,6 +34,13 @@ export const saveProfile = async (req, res) => {
       description,
       profileImage,
       resumeUrl,
+      email,
+      phone,
+      skype,
+      experience,
+      nationality,
+      freelance,
+      languages,
       githubUrl,
       linkedinUrl,
       youtubeUrl,
@@ -48,11 +55,22 @@ export const saveProfile = async (req, res) => {
         description,
         profileImage,
         resumeUrl,
+        email,
+        phone,
+        skype,
+        experience,
+        nationality,
+        freelance,
+        languages: Array.isArray(languages)
+          ? languages
+          : typeof languages === "string"
+            ? languages.split(",").map((lang) => lang.trim())
+            : [],
         socials: {
-          github: githubUrl,
-          linkedin: linkedinUrl,
-          youtube: youtubeUrl,
-          twitter: twitterUrl,
+          github: githubUrl || "",
+          linkedin: linkedinUrl || "",
+          youtube: youtubeUrl || "",
+          twitter: twitterUrl || "",
         },
       },
       {

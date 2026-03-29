@@ -43,12 +43,40 @@ export const saveProfile = createAsyncThunk(
   "profile/saveProfile",
   async (profileData, thunkAPI) => {
     try {
+      const payload = {
+        name: profileData.name || "",
+        role: profileData.role || "",
+        description: profileData.description || "",
+        profileImage: profileData.profileImage || "",
+        resumeUrl: profileData.resumeUrl || "",
+
+        email: profileData.email || "",
+        phone: profileData.phone || "",
+        skype: profileData.skype || "",
+        experience: profileData.experience || "",
+        nationality: profileData.nationality || "",
+        freelance: profileData.freelance || "",
+        languages: Array.isArray(profileData.languages)
+          ? profileData.languages
+          : typeof profileData.languages === "string"
+            ? profileData.languages.split(",").map((lang) => lang.trim())
+            : [],
+
+        githubUrl: profileData.githubUrl || profileData.socials?.github || "",
+        linkedinUrl:
+          profileData.linkedinUrl || profileData.socials?.linkedin || "",
+        youtubeUrl:
+          profileData.youtubeUrl || profileData.socials?.youtube || "",
+        twitterUrl:
+          profileData.twitterUrl || profileData.socials?.twitter || "",
+      };
+
       const response = await fetch(`${BASE_URL}/api/profile/save`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(profileData),
+        body: JSON.stringify(payload),
       });
 
       const data = await response.json();
@@ -90,7 +118,28 @@ export const deleteProfile = createAsyncThunk(
 );
 
 const initialState = {
-  profile: null,
+  profile: {
+    name: "",
+    role: "",
+    description: "",
+    profileImage: "",
+    resumeUrl: "",
+
+    email: "",
+    phone: "",
+    skype: "",
+    experience: "",
+    nationality: "",
+    freelance: "",
+    languages: [],
+
+    socials: {
+      github: "",
+      linkedin: "",
+      youtube: "",
+      twitter: "",
+    },
+  },
   loading: false,
   error: null,
   success: false,
@@ -113,7 +162,7 @@ const profileSlice = createSlice({
     },
 
     clearSelectedProfile: (state) => {
-      state.profile = null;
+      state.profile = initialState.profile;
     },
 
     clearProfileUploadedImage: (state) => {
@@ -150,7 +199,17 @@ const profileSlice = createSlice({
       })
       .addCase(fetchProfile.fulfilled, (state, action) => {
         state.loading = false;
-        state.profile = action.payload?.data || null;
+        state.profile = {
+          ...initialState.profile,
+          ...action.payload?.data,
+          socials: {
+            ...initialState.profile.socials,
+            ...(action.payload?.data?.socials || {}),
+          },
+          languages: Array.isArray(action.payload?.data?.languages)
+            ? action.payload.data.languages
+            : [],
+        };
       })
       .addCase(fetchProfile.rejected, (state, action) => {
         state.loading = false;
@@ -168,7 +227,17 @@ const profileSlice = createSlice({
         state.loading = false;
         state.success = true;
         state.message = action.payload?.message || "Profile saved successfully";
-        state.profile = action.payload?.data || null;
+        state.profile = {
+          ...initialState.profile,
+          ...action.payload?.data,
+          socials: {
+            ...initialState.profile.socials,
+            ...(action.payload?.data?.socials || {}),
+          },
+          languages: Array.isArray(action.payload?.data?.languages)
+            ? action.payload.data.languages
+            : [],
+        };
       })
       .addCase(saveProfile.rejected, (state, action) => {
         state.loading = false;
@@ -188,7 +257,7 @@ const profileSlice = createSlice({
         state.success = true;
         state.message =
           action.payload?.message || "Profile deleted successfully";
-        state.profile = null;
+        state.profile = initialState.profile;
       })
       .addCase(deleteProfile.rejected, (state, action) => {
         state.loading = false;
