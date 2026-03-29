@@ -5,7 +5,7 @@ import {
   createJobExperience,
   updateJob,
   deleteJob,
-} from "../controllers/JobExperienceController.js";
+} from "../controllers/jobExperienceController.js";
 
 const router = express.Router();
 

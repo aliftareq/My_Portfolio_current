@@ -6,6 +6,7 @@ import uploadRoutes from "./routes/uploadRoutes.js";
 import projectRoutes from "./routes/projectRoutes.js";
 import profileRoutes from "./routes/profileRoutes.js";
 import jobExperienceRoutes from "./routes/jobExperienceRoutes.js";
+import educationRoutes from "./routes/educationRoutes.js";
 
 const app = express();
 
@@ -33,5 +34,6 @@ app.use("/api", uploadRoutes);
 app.use("/api/projects", projectRoutes);
 app.use("/api/profile", profileRoutes);
 app.use("/api/job-experiences", jobExperienceRoutes);
+app.use("/api/education", educationRoutes);
 
 export default app;
