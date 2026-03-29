@@ -7,6 +7,7 @@ import projectRoutes from "./routes/projectRoutes.js";
 import profileRoutes from "./routes/profileRoutes.js";
 import jobExperienceRoutes from "./routes/jobExperienceRoutes.js";
 import educationRoutes from "./routes/educationRoutes.js";
+import serviceRoutes from "./routes/serviceRoutes.js";
 
 const app = express();
 
@@ -35,5 +36,6 @@ app.use("/api/projects", projectRoutes);
 app.use("/api/profile", profileRoutes);
 app.use("/api/job-experiences", jobExperienceRoutes);
 app.use("/api/education", educationRoutes);
+app.use("/api/services", serviceRoutes);
 
 export default app;

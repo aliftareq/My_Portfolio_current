@@ -171,61 +171,78 @@ export default function EditProjectPage() {
           className="space-y-8 rounded-3xl border border-white/10 bg-white/5 p-6 md:p-8"
         >
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-            <input
-              type="text"
-              name="title"
-              placeholder="Title"
-              value={form.title}
-              onChange={handleChange}
-              className="w-full h-12 px-4 rounded-xl bg-white/5 border border-white/10 outline-none focus:border-accent"
-            />
+            <div className="space-y-2">
+              <label className="block text-sm text-white/70">Title</label>
+              <input
+                type="text"
+                name="title"
+                placeholder="Title"
+                value={form.title}
+                onChange={handleChange}
+                className="w-full h-12 px-4 rounded-xl bg-white/5 border border-white/10 outline-none focus:border-accent"
+              />
+            </div>
 
-            <select
-              name="category"
-              value={form.category}
-              onChange={handleChange}
-              className="w-full h-12 px-4 rounded-xl bg-white/5 border border-white/10 outline-none focus:border-accent"
-            >
-              {serviceOptions.map((service) => (
-                <option
-                  key={service}
-                  value={service}
-                  className="bg-[#1c1c22] text-white"
-                >
-                  {service}
-                </option>
-              ))}
-            </select>
+            <div className="space-y-2">
+              <label className="block text-sm text-white/70">Category</label>
+              <select
+                name="category"
+                value={form.category}
+                onChange={handleChange}
+                className="w-full h-12 px-4 rounded-xl bg-white/5 border border-white/10 outline-none focus:border-accent"
+              >
+                {serviceOptions.map((service) => (
+                  <option
+                    key={service}
+                    value={service}
+                    className="bg-[#1c1c22] text-white"
+                  >
+                    {service}
+                  </option>
+                ))}
+              </select>
+            </div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-            <input
-              type="text"
-              name="subCategory"
-              placeholder="Sub-category"
-              value={form.subCategory}
-              onChange={handleChange}
-              className="w-full h-12 px-4 rounded-xl bg-white/5 border border-white/10 outline-none focus:border-accent"
-            />
+            <div className="space-y-2">
+              <label className="block text-sm text-white/70">
+                Sub-category
+              </label>
+              <input
+                type="text"
+                name="subCategory"
+                placeholder="Sub-category"
+                value={form.subCategory}
+                onChange={handleChange}
+                className="w-full h-12 px-4 rounded-xl bg-white/5 border border-white/10 outline-none focus:border-accent"
+              />
+            </div>
 
-            <input
-              type="text"
-              name="slug"
-              placeholder="Slug"
-              value={form.slug}
-              onChange={handleChange}
-              className="w-full h-12 px-4 rounded-xl bg-white/5 border border-white/10 outline-none focus:border-accent"
-            />
+            <div className="space-y-2">
+              <label className="block text-sm text-white/70">Slug</label>
+              <input
+                type="text"
+                name="slug"
+                placeholder="Slug"
+                value={form.slug}
+                onChange={handleChange}
+                className="w-full h-12 px-4 rounded-xl bg-white/5 border border-white/10 outline-none focus:border-accent"
+              />
+            </div>
           </div>
 
-          <textarea
-            name="description"
-            placeholder="Description"
-            value={form.description}
-            onChange={handleChange}
-            rows={5}
-            className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 outline-none focus:border-accent resize-none"
-          />
+          <div className="space-y-2">
+            <label className="block text-sm text-white/70">Description</label>
+            <textarea
+              name="description"
+              placeholder="Description"
+              value={form.description}
+              onChange={handleChange}
+              rows={5}
+              className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 outline-none focus:border-accent resize-none"
+            />
+          </div>
 
           <div className="space-y-3">
             <div className="flex items-center justify-between gap-4 flex-wrap">
@@ -242,24 +259,30 @@ export default function EditProjectPage() {
 
             <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
               {form.techStack.map((item, index) => (
-                <div key={index} className="relative">
-                  <input
-                    type="text"
-                    value={item}
-                    placeholder={`Tech ${index + 1}`}
-                    onChange={(e) =>
-                      handleArrayChange(index, e.target.value, "techStack")
-                    }
-                    className="w-full h-14 px-4 pr-14 rounded-xl bg-white/5 border border-white/10 outline-none focus:border-accent"
-                  />
+                <div key={index} className="space-y-2">
+                  <label className="block text-sm text-white/70">
+                    Tech {index + 1}
+                  </label>
 
-                  <button
-                    type="button"
-                    onClick={() => removeField(index, "techStack")}
-                    className="absolute right-2 top-1/2 -translate-y-1/2 h-10 w-10 rounded-lg bg-red-500/90 text-white hover:bg-red-500"
-                  >
-                    ×
-                  </button>
+                  <div className="relative">
+                    <input
+                      type="text"
+                      value={item}
+                      placeholder={`Tech ${index + 1}`}
+                      onChange={(e) =>
+                        handleArrayChange(index, e.target.value, "techStack")
+                      }
+                      className="w-full h-14 px-4 pr-14 rounded-xl bg-white/5 border border-white/10 outline-none focus:border-accent"
+                    />
+
+                    <button
+                      type="button"
+                      onClick={() => removeField(index, "techStack")}
+                      className="absolute right-2 top-1/2 -translate-y-1/2 h-10 w-10 rounded-lg bg-red-500/90 text-white hover:bg-red-500"
+                    >
+                      ×
+                    </button>
+                  </div>
                 </div>
               ))}
             </div>
@@ -313,35 +336,44 @@ export default function EditProjectPage() {
           )}
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-            <input
-              type="text"
-              name="liveUrl"
-              placeholder="Live URL"
-              value={form.liveUrl}
-              onChange={handleChange}
-              className="w-full h-12 px-4 rounded-xl bg-white/5 border border-white/10 outline-none focus:border-accent"
-            />
+            <div className="space-y-2">
+              <label className="block text-sm text-white/70">Live URL</label>
+              <input
+                type="text"
+                name="liveUrl"
+                placeholder="Live URL"
+                value={form.liveUrl}
+                onChange={handleChange}
+                className="w-full h-12 px-4 rounded-xl bg-white/5 border border-white/10 outline-none focus:border-accent"
+              />
+            </div>
 
-            <input
-              type="text"
-              name="githubUrl"
-              placeholder="GitHub URL"
-              value={form.githubUrl}
-              onChange={handleChange}
-              className="w-full h-12 px-4 rounded-xl bg-white/5 border border-white/10 outline-none focus:border-accent"
-            />
+            <div className="space-y-2">
+              <label className="block text-sm text-white/70">GitHub URL</label>
+              <input
+                type="text"
+                name="githubUrl"
+                placeholder="GitHub URL"
+                value={form.githubUrl}
+                onChange={handleChange}
+                className="w-full h-12 px-4 rounded-xl bg-white/5 border border-white/10 outline-none focus:border-accent"
+              />
+            </div>
           </div>
 
-          <label className="inline-flex items-center gap-3 rounded-xl border border-white/10 bg-white/5 px-4 py-3 cursor-pointer">
-            <input
-              type="checkbox"
-              name="featured"
-              checked={form.featured}
-              onChange={handleChange}
-              className="h-4 w-4"
-            />
-            <span className="text-white">Featured Project</span>
-          </label>
+          <div className="space-y-2">
+            <label className="block text-sm text-white/70">Featured</label>
+            <label className="inline-flex items-center gap-3 rounded-xl border border-white/10 bg-white/5 px-4 py-3 cursor-pointer">
+              <input
+                type="checkbox"
+                name="featured"
+                checked={form.featured}
+                onChange={handleChange}
+                className="h-4 w-4"
+              />
+              <span className="text-white">Featured Project</span>
+            </label>
+          </div>
 
           <button
             type="submit"
