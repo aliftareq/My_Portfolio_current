@@ -5,6 +5,7 @@ import morgan from "morgan";
 import uploadRoutes from "./routes/uploadRoutes.js";
 import projectRoutes from "./routes/projectRoutes.js";
 import profileRoutes from "./routes/profileRoutes.js";
+import jobExperienceRoutes from "./routes/jobExperienceRoutes.js";
 
 const app = express();
 
@@ -12,7 +13,7 @@ app.use(
   cors({
     origin: "http://localhost:3000",
     credentials: true,
-  })
+  }),
 );
 
 app.use(express.json());
@@ -27,10 +28,10 @@ app.get("/api/health", (req, res) => {
   res.json({ success: true, message: "Server is healthy" });
 });
 
-
-//routes 
+//routes
 app.use("/api", uploadRoutes);
 app.use("/api/projects", projectRoutes);
 app.use("/api/profile", profileRoutes);
+app.use("/api/job-experiences", jobExperienceRoutes);
 
 export default app;
