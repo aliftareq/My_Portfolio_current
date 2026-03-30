@@ -11,6 +11,7 @@ import {
   LayoutDashboard,
   Briefcase,
   GraduationCap,
+  BookOpen,
   Wrench,
   Blocks,
 } from "lucide-react";
@@ -21,6 +22,7 @@ const navItems = [
   { name: "Profile", href: "/admin/profile", icon: User },
   { name: "Experience", href: "/admin/experience", icon: Briefcase },
   { name: "Education", href: "/admin/education", icon: GraduationCap },
+  { name: "Courses", href: "/admin/courses", icon: BookOpen },
   { name: "Skills", href: "/admin/skills", icon: Wrench },
   { name: "Projects", href: "/admin/projects", icon: FolderKanban },
   { name: "Services", href: "/admin/services", icon: Blocks },
