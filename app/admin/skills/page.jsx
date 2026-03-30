@@ -1,7 +1,5 @@
-import React from "react";
+import AdminSkills from "../../../components/admin/AdminSkills.jsx";
 
-const skillPage = () => {
-  return <div>Skill Page</div>;
-};
-
-export default skillPage;
+export default function Page() {
+  return <AdminSkills />;
+}

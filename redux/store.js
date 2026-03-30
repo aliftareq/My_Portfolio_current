@@ -5,6 +5,7 @@ import jobExperienceReducer from "./features/jobExperience/jobExperienceSlice";
 import educationReducer from "./features/education/educationSlice";
 import serviceReducer from "./features/service/serviceSlice";
 import courseReducer from "./features/courses/courseSlice";
+import skillReducer from "./features/skill/skillSlice";
 
 export const store = configureStore({
   reducer: {
@@ -14,5 +15,6 @@ export const store = configureStore({
     education: educationReducer,
     service: serviceReducer,
     courses: courseReducer,
+    skills: skillReducer,
   },
 });
