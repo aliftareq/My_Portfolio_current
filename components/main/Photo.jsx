@@ -2,8 +2,13 @@
 
 import { motion } from "framer-motion";
 import Image from "next/image";
+import { useSelector } from "react-redux";
 
 const Photo = () => {
+  const { profile } = useSelector((state) => state.profile);
+
+  const imageSrc = profile?.profileImage || "/assets/photo.png";
+
   return (
     <div className="w-full h-full relative">
       <motion.div
@@ -23,11 +28,11 @@ const Photo = () => {
           className="w-[298px] h-[298px] xl:w-[498px] xl:h-[498px] mix-blend-lighten absolute"
         >
           <Image
-            src="/assets/photo.png"
+            src={imageSrc}
             priority
             quality={100}
             fill
-            alt="photo"
+            alt={profile?.name || "photo"}
             className="object-contain mx-auto pb-6"
           />
         </motion.div>
