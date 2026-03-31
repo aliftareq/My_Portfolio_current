@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { BsArrowUpRight, BsGithub } from "react-icons/bs";
 import ProjectGallery from "./ProjectGallery";
@@ -14,21 +14,36 @@ import {
 export default function ProjectDetailsClient() {
   const dispatch = useDispatch();
   const params = useParams();
-  const slug = params?.slug;
+  const router = useRouter();
+
+  const projectSlug = params?.projectSlug;
+  const serviceSlug = params?.serviceSlug;
 
   const { project, loading, error } = useSelector((state) => state.project);
 
+  // fetch project
   useEffect(() => {
-    if (slug) {
-      dispatch(fetchSingleProjectBySlug(slug));
+    if (projectSlug) {
+      dispatch(fetchSingleProjectBySlug(projectSlug));
     }
 
     return () => {
       dispatch(clearSelectedProject());
     };
-  }, [dispatch, slug]);
+  }, [dispatch, projectSlug]);
 
-  if (!slug) {
+  // validate service match
+  const isValidService = project?.category === serviceSlug;
+
+  // redirect if wrong service
+  useEffect(() => {
+    if (project && !isValidService) {
+      router.replace(`/work/${project.category}/${project.slug}`);
+    }
+  }, [project, isValidService, router]);
+
+  // invalid slug
+  if (!projectSlug) {
     return (
       <div className="min-h-[80vh] flex items-center justify-center text-white text-xl">
         Invalid project slug.
@@ -36,6 +51,7 @@ export default function ProjectDetailsClient() {
     );
   }
 
+  // loading
   if (loading) {
     return (
       <div className="min-h-[80vh] flex items-center justify-center text-white text-xl">
@@ -44,6 +60,7 @@ export default function ProjectDetailsClient() {
     );
   }
 
+  // error
   if (error) {
     return (
       <div className="min-h-[80vh] flex items-center justify-center text-red-400 text-xl">
@@ -52,6 +69,7 @@ export default function ProjectDetailsClient() {
     );
   }
 
+  // not found
   if (!project) {
     return (
       <div className="min-h-[80vh] flex items-center justify-center text-white text-xl">
@@ -64,6 +82,7 @@ export default function ProjectDetailsClient() {
     <section className="min-h-[80vh] py-16 xl:py-24 text-white">
       <div className="container mx-auto px-4">
         <div className="flex flex-col gap-12">
+          {/* HEADER */}
           <div className="flex flex-col gap-6">
             <p className="text-accent uppercase tracking-[4px] text-sm font-medium">
               {project.category}
@@ -72,13 +91,11 @@ export default function ProjectDetailsClient() {
             <h1 className="text-4xl md:text-5xl xl:text-6xl font-bold leading-tight">
               {project.title}
             </h1>
-
-            <p className="max-w-3xl text-white/70 text-base md:text-lg leading-relaxed">
-              {project.description}
-            </p>
           </div>
 
+          {/* CONTENT */}
           <div className="grid grid-cols-1 xl:grid-cols-3 gap-10">
+            {/* GALLERY */}
             <div className="xl:col-span-2">
               <ProjectGallery
                 title={project.title}
@@ -87,6 +104,7 @@ export default function ProjectDetailsClient() {
               />
             </div>
 
+            {/* SIDEBAR */}
             <div className="xl:col-span-1">
               <div className="bg-white/5 border border-white/10 rounded-2xl p-6 md:p-8 h-fit sticky top-24">
                 <h2 className="text-2xl font-bold mb-6">Project Info</h2>
@@ -144,6 +162,7 @@ export default function ProjectDetailsClient() {
             </div>
           </div>
 
+          {/* DESCRIPTION */}
           <div className="bg-white/5 border border-white/10 rounded-2xl p-6 md:p-8">
             <h2 className="text-2xl md:text-3xl font-bold mb-4">
               About this project
