@@ -69,6 +69,18 @@ const profileSchema = new mongoose.Schema(
       default: "",
     },
 
+    currentAddress: {
+      type: String,
+      trim: true,
+      default: "",
+    },
+
+    permanentAddress: {
+      type: String,
+      trim: true,
+      default: "",
+    },
+
     languages: {
       type: [String],
       default: [],
@@ -99,7 +111,7 @@ const profileSchema = new mongoose.Schema(
   },
   {
     timestamps: true,
-  }
+  },
 );
 
 // Prevent model overwrite in dev (Next.js hot reload fix)

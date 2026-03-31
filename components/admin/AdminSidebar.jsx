@@ -26,7 +26,6 @@ const navItems = [
   { name: "Skills", href: "/admin/skills", icon: Wrench },
   { name: "Projects", href: "/admin/projects", icon: FolderKanban },
   { name: "Services", href: "/admin/services", icon: Blocks },
-  { name: "Contacts", href: "/admin/contacts", icon: Mail },
 ];
 
 export default function AdminSidebar() {

@@ -36,6 +36,8 @@ export default function AdminProfilePage() {
     experience: "",
     nationality: "",
     freelance: "",
+    currentAddress: "",
+    permanentAddress: "",
     languages: "",
     githubUrl: "",
     linkedinUrl: "",
@@ -60,6 +62,8 @@ export default function AdminProfilePage() {
         experience: profile.experience || "",
         nationality: profile.nationality || "",
         freelance: profile.freelance || "",
+        currentAddress: profile.currentAddress || "",
+        permanentAddress: profile.permanentAddress || "",
         languages: Array.isArray(profile.languages)
           ? profile.languages.join(", ")
           : "",
@@ -107,6 +111,8 @@ export default function AdminProfilePage() {
         experience: form.experience,
         nationality: form.nationality,
         freelance: form.freelance,
+        currentAddress: form.currentAddress,
+        permanentAddress: form.permanentAddress,
         languages: form.languages,
         githubUrl: form.githubUrl,
         linkedinUrl: form.linkedinUrl,
@@ -364,7 +370,6 @@ export default function AdminProfilePage() {
                     </option>
                   </select>
 
-                  {/* Custom dropdown icon */}
                   <div className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-white/60">
                     ▼
                   </div>
@@ -382,6 +387,34 @@ export default function AdminProfilePage() {
                   value={form.languages}
                   onChange={handleChange}
                   placeholder="English, Bengali"
+                  className={inputClassName}
+                />
+              </div>
+
+              <div>
+                <label htmlFor="currentAddress" className={labelClassName}>
+                  Current Address
+                </label>
+                <input
+                  id="currentAddress"
+                  type="text"
+                  name="currentAddress"
+                  value={form.currentAddress}
+                  onChange={handleChange}
+                  className={inputClassName}
+                />
+              </div>
+
+              <div>
+                <label htmlFor="permanentAddress" className={labelClassName}>
+                  Permanent Address
+                </label>
+                <input
+                  id="permanentAddress"
+                  type="text"
+                  name="permanentAddress"
+                  value={form.permanentAddress}
+                  onChange={handleChange}
                   className={inputClassName}
                 />
               </div>

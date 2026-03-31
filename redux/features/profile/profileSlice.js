@@ -56,6 +56,8 @@ export const saveProfile = createAsyncThunk(
         experience: profileData.experience || "",
         nationality: profileData.nationality || "",
         freelance: profileData.freelance || "",
+        currentAddress: profileData.currentAddress || "",
+        permanentAddress: profileData.permanentAddress || "",
         languages: Array.isArray(profileData.languages)
           ? profileData.languages
           : typeof profileData.languages === "string"
@@ -131,6 +133,8 @@ const initialState = {
     experience: "",
     nationality: "",
     freelance: "",
+    currentAddress: "",
+    permanentAddress: "",
     languages: [],
 
     socials: {

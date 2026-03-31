@@ -40,6 +40,8 @@ export const saveProfile = async (req, res) => {
       experience,
       nationality,
       freelance,
+      currentAddress,
+      permanentAddress,
       languages,
       githubUrl,
       linkedinUrl,
@@ -61,6 +63,8 @@ export const saveProfile = async (req, res) => {
         experience,
         nationality,
         freelance,
+        currentAddress,
+        permanentAddress,
         languages: Array.isArray(languages)
           ? languages
           : typeof languages === "string"
