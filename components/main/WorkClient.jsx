@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import React, { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
@@ -177,7 +177,7 @@ export default function WorkClient() {
                       <div className="absolute inset-0 bg-black/10 z-10 pointer-events-none"></div>
 
                       <Link
-                        href={`/work/${item.slug}`}
+                        href={`/work/${activeService}/${item.slug}`}
                         className="relative flex items-center justify-center w-full h-full"
                       >
                         <Image
@@ -191,9 +191,8 @@ export default function WorkClient() {
                     </div>
                   </SwiperSlide>
                 ))}
-
                 <WorkSliderBtns
-                  containerStyles="flex gap-2 absolute right-0 bottom-[calc(50%_-_22px)] xl:bottom-0 z-20 w-full justify-between xl:w-max xl:justify-none"
+                  containerStyles="flex gap-2 absolute right-4 bottom-2 xl:bottom-20 z-20 xl:w-max"
                   btnStyles="bg-accent hover:bg-accent-hover text-primary text-[22px] w-[44px] h-[44px] flex justify-center items-center transition-all"
                 />
               </Swiper>
