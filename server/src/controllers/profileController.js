@@ -1,4 +1,5 @@
 import Profile from "../models/Profile.js";
+import { fetchGithubCommitTotal } from "../utils/githubService.js";
 
 // GET PROFILE
 export const getProfile = async (req, res) => {
@@ -20,6 +21,26 @@ export const getProfile = async (req, res) => {
     res.status(500).json({
       success: false,
       message: "Failed to fetch profile",
+      error: error.message,
+    });
+  }
+};
+
+// GET GITHUB COMMIT COUNT
+export const getGithubCommitCount = async (req, res) => {
+  try {
+    const totalCommits = await fetchGithubCommitTotal();
+
+    res.status(200).json({
+      success: true,
+      data: {
+        totalCommits,
+      },
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Failed to fetch GitHub commit count",
       error: error.message,
     });
   }

@@ -119,6 +119,32 @@ export const deleteProfile = createAsyncThunk(
   },
 );
 
+// --------------------
+// GITHUB COMMIT COUNT THUNK
+// --------------------
+export const fetchGithubCommitCount = createAsyncThunk(
+  "profile/fetchGithubCommitCount",
+  async (_, thunkAPI) => {
+    try {
+      const response = await fetch(`${BASE_URL}/api/profile/github-commits`, {
+        cache: "no-store",
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        return thunkAPI.rejectWithValue(
+          data.message || "Failed to fetch GitHub commit count",
+        );
+      }
+
+      return data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.message || "Something went wrong");
+    }
+  },
+);
+
 const initialState = {
   profile: {
     name: "",
@@ -144,6 +170,11 @@ const initialState = {
       twitter: "",
     },
   },
+
+  githubCommitCount: 0,
+  githubCommitLoading: false,
+  githubCommitError: null,
+
   loading: false,
   error: null,
   success: false,
@@ -173,6 +204,11 @@ const profileSlice = createSlice({
       state.mainImageLoading = false;
       state.mainImageError = null;
       state.uploadedImageUrl = "";
+    },
+
+    clearGithubCommitState: (state) => {
+      state.githubCommitLoading = false;
+      state.githubCommitError = null;
     },
   },
   extraReducers: (builder) => {
@@ -267,6 +303,21 @@ const profileSlice = createSlice({
         state.loading = false;
         state.success = false;
         state.error = action.payload || "Failed to delete profile";
+      })
+
+      // FETCH GITHUB COMMIT COUNT
+      .addCase(fetchGithubCommitCount.pending, (state) => {
+        state.githubCommitLoading = true;
+        state.githubCommitError = null;
+      })
+      .addCase(fetchGithubCommitCount.fulfilled, (state, action) => {
+        state.githubCommitLoading = false;
+        state.githubCommitCount = action.payload?.data?.totalCommits || 0;
+      })
+      .addCase(fetchGithubCommitCount.rejected, (state, action) => {
+        state.githubCommitLoading = false;
+        state.githubCommitError =
+          action.payload || "Failed to fetch GitHub commit count";
       });
   },
 });
@@ -275,6 +326,7 @@ export const {
   clearProfileState,
   clearSelectedProfile,
   clearProfileUploadedImage,
+  clearGithubCommitState,
 } = profileSlice.actions;
 
 export default profileSlice.reducer;
