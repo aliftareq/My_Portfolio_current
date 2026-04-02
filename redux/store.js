@@ -6,6 +6,7 @@ import educationReducer from "./features/education/educationSlice";
 import serviceReducer from "./features/service/serviceSlice";
 import courseReducer from "./features/courses/courseSlice";
 import skillReducer from "./features/skill/skillSlice";
+import emailReducer from "./features/email/emailSlice";
 
 export const store = configureStore({
   reducer: {
@@ -16,5 +17,6 @@ export const store = configureStore({
     service: serviceReducer,
     courses: courseReducer,
     skills: skillReducer,
+    email: emailReducer,
   },
 });
