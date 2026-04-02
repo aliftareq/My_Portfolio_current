@@ -33,7 +33,7 @@ const jobExperienceSchema = new mongoose.Schema(
 
     endDate: {
       type: Date,
-      default: null, // null = currently working
+      default: null, 
     },
 
     currentlyWorking: {

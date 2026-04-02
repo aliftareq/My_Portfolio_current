@@ -27,7 +27,7 @@ const EducationCard = ({ item, onOpen }) => {
         </p>
 
         <div>
-          <h3 className="text-2xl md:text-3xl font-bold leading-snug break-words">
+          <h3 className="text-2xl font-bold leading-snug break-words">
             {item?.institutionName || "Institution Name"}
           </h3>
 
@@ -40,7 +40,7 @@ const EducationCard = ({ item, onOpen }) => {
           </p>
         </div>
 
-        <div className="self-start rounded-full border border-white/10 px-4 py-2 text-sm text-white/80">
+        <div className="self-center rounded-full border border-white/10 px-4 py-2 text-sm text-white/80">
           {formatDateRange(
             item?.startDate,
             item?.endDate,

@@ -46,7 +46,7 @@ const ExperienceCard = ({ item, onOpen }) => {
         </div>
 
         {/* Duration */}
-        <div className="self-start rounded-full border border-white/10 px-4 py-2 text-sm text-white/80">
+        <div className="self-center rounded-full border border-white/10 px-4 py-2 text-sm text-white/80">
           {formatDateRange(
             item?.startDate,
             item?.endDate,
