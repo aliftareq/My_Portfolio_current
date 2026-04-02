@@ -118,6 +118,13 @@ export default function ProjectDetailsClient() {
                   </div>
 
                   <div>
+                    <p className="text-white/50 text-sm mb-2">Sub Category</p>
+                    <p className="text-lg font-medium capitalize">
+                      {project.subCategory}
+                    </p>
+                  </div>
+
+                  <div>
                     <p className="text-white/50 text-sm mb-2">Tech Stack</p>
                     <div className="flex flex-wrap gap-2">
                       {project.techStack?.map((tech, index) => (
@@ -129,11 +136,6 @@ export default function ProjectDetailsClient() {
                         </span>
                       ))}
                     </div>
-                  </div>
-
-                  <div>
-                    <p className="text-white/50 text-sm mb-2">Slug</p>
-                    <p className="text-white/80">{project.slug}</p>
                   </div>
 
                   <div className="pt-4 border-t border-white/10 flex flex-wrap gap-4">
