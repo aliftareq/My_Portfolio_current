@@ -1,9 +1,31 @@
 "use client";
 
-import { useSelector } from "react-redux";
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchSkills } from "../../../redux/features/skill/skillSlice";
+import SkillCard from "./SkillCard";
+import SkillModal from "./SkillModal";
 
 const SkillsSection = () => {
+  const dispatch = useDispatch();
   const { skills, loading, error } = useSelector((state) => state.skills);
+
+  const [selectedSkill, setSelectedSkill] = useState(null);
+  const [open, setOpen] = useState(false);
+
+  useEffect(() => {
+    dispatch(fetchSkills());
+  }, [dispatch]);
+
+  const handleOpen = (item) => {
+    setSelectedSkill(item);
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+    setSelectedSkill(null);
+  };
 
   if (loading) {
     return <p className="text-white/60">Loading skills...</p>;
@@ -14,41 +36,32 @@ const SkillsSection = () => {
   }
 
   return (
-    <div className="flex flex-col gap-[30px] text-center xl:text-left">
-      {/* Title */}
-      <h3 className="text-4xl font-bold">My Skills</h3>
+    <>
+      <div className="flex flex-col gap-[30px] text-center xl:text-left">
+        <h3 className="text-4xl font-bold">My Skills</h3>
 
-      {/* Description (optional) */}
-      <p className="max-w-[700px] text-white/60 mx-auto xl:mx-0">
-        Technologies and tools I use to build modern, scalable applications.
-      </p>
+        <p className="max-w-[700px] text-white/60 mx-auto xl:mx-0">
+          Technologies, tools, and professional abilities I use to build modern,
+          reliable, and scalable digital products.
+        </p>
 
-      {/* Skills Grid */}
-      <div className="max-w-5xl">
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-          {skills?.map((skill) => (
-            <div
-              key={skill._id}
-              className="group w-full rounded-[16px] border border-white/10 bg-[#232329] p-4 flex flex-col items-center justify-center text-center hover:border-accent transition-all duration-300"
-            >
-              {/* Icon (if exists) */}
-              {skill?.icon && (
-                <img
-                  src={skill.icon}
-                  alt={skill.name}
-                  className="w-10 h-10 mb-3 object-contain"
-                />
-              )}
-
-              {/* Name */}
-              <p className="text-white text-sm font-medium group-hover:text-accent transition-all duration-300">
-                {skill?.name}
-              </p>
-            </div>
-          ))}
-        </div>
+        {skills?.length > 0 ? (
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+            {skills.map((item) => (
+              <SkillCard
+                key={item._id}
+                item={item}
+                onOpen={() => handleOpen(item)}
+              />
+            ))}
+          </div>
+        ) : (
+          <p className="text-white/50">No skills found.</p>
+        )}
       </div>
-    </div>
+
+      <SkillModal item={selectedSkill} open={open} onClose={handleClose} />
+    </>
   );
 };
 
