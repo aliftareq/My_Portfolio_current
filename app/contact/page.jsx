@@ -32,7 +32,6 @@ const Contact = () => {
     dispatch(fetchServices());
   }, [dispatch]);
 
-  // ✅ Contact Info
   const info = useMemo(
     () => [
       {
@@ -86,8 +85,7 @@ const Contact = () => {
               <h3 className="text-4xl text-accent">Let&apos;s Work Together</h3>
 
               <p className="text-white/60">
-                {profile?.description ||
-                  "Feel free to contact me for any project or collaboration."}
+                Feel free to contact me for any project or collaboration.
               </p>
 
               {mounted ? (
