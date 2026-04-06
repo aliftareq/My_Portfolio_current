@@ -12,11 +12,13 @@ import serviceRoutes from "./routes/serviceRoutes.js";
 import skillRoutes from "./routes/skillRoutes.js";
 import emailRoutes from "./routes/emailRoutes.js";
 
+import connectDB from "./config/db.js";
+
 const app = express();
 
 app.use(
   cors({
-    origin: "http://localhost:3000",
+    origin: ["http://localhost:3000", "https://dev-alif.vercel.app"],
     credentials: true,
   }),
 );
@@ -31,6 +33,12 @@ app.get("/", (req, res) => {
 
 app.get("/api/health", (req, res) => {
   res.json({ success: true, message: "Server is healthy" });
+});
+
+// connect DB on every request (cached internally)
+app.use(async (req, res, next) => {
+  await connectDB();
+  next();
 });
 
 //routes
