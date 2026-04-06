@@ -10,7 +10,7 @@ import educationRoutes from "./routes/educationRoutes.js";
 import courseRoutes from "./routes/courseRoutes.js";
 import serviceRoutes from "./routes/serviceRoutes.js";
 import skillRoutes from "./routes/skillRoutes.js";
-import emailRoutes from './routes/emailRoutes.js';
+import emailRoutes from "./routes/emailRoutes.js";
 
 const app = express();
 
@@ -42,6 +42,6 @@ app.use("/api/education", educationRoutes);
 app.use("/api/courses", courseRoutes);
 app.use("/api/services", serviceRoutes);
 app.use("/api/skills", skillRoutes);
-app.use('/api/email', emailRoutes);
+app.use("/api/email", emailRoutes);
 
 export default app;
